@@ -25,5 +25,5 @@ class Metadata(orig: com.drew.metadata.Metadata) {
 
 class Directory(orig: com.drew.metadata.Directory) {
   def tags: Iterable[Tag] = orig.getTags.asScala
-  def name = orig.getName
+  def name: String = orig.getName
 }
