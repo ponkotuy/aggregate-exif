@@ -1,0 +1,28 @@
+{
+  "name": "aggregate_exif_view",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ponkotuy/FactorioRecipe.git"
+  },
+  "author": "ponkotuy (web@ponkotuy.com)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ponkotuy/FactorioRecipe/issues"
+  },
+  "homepage": "https://github.com/ponkotuy/FactorioRecipe#readme",
+  "devDependencies": {
+    "bootstrap-material-design": "^0.5.10",
+    "coffee-script": "^1.12.6",
+    "gulp": "^3.9.1",
+    "gulp-coffee": "^2.3.4",
+    "gulp-plumber": "^1.1.0",
+    "gulp-pug": "^3.3.0"
+  },
+  "dependencies": {}
+}

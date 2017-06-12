@@ -15,23 +15,23 @@ object Main extends Charting {
       Exif.fromMap(map)
     }
     aggISO(exifs).saveAsPNG("/tmp/iso.png")
-    val zoom: Seq[(Int, Int)] = exifs.groupBy(_.focal).mapValues(_.size).toSeq.sortBy(_._1)
+    val zoom: Seq[(Int, Int)] = exifs.groupBy(_.cond.focal).mapValues(_.size).toSeq.sortBy(_._1)
     XYBarChart(zoom).saveAsPNG("/tmp/zoom.png")
-    val fNumber: Seq[(Double, Int)] = exifs.groupBy(_.fNumber).mapValues(_.size).toSeq.sortBy(_._1)
+    val fNumber: Seq[(Double, Int)] = exifs.groupBy(_.cond.fNumber).mapValues(_.size).toSeq.sortBy(_._1)
     XYBarChart(fNumber).saveAsPNG("/tmp/fNumber.png")
     aggExposure(exifs).saveAsPNG("/tmp/exposure.png")
   }
 
   val ISOGroup: Stream[Int] = 100 #:: ISOGroup.map(_ * 2)
   def aggISO(exifs: Seq[Exif]): PNGExporter = {
-    val iso: Seq[(Int, Int)] = exifs.map { x => x.copy(iso = ISOGroup.find(x.iso <= _).get) }
+    val iso: Seq[(Int, Int)] = exifs.map { x => x.cond.copy(iso = ISOGroup.find(x.cond.iso <= _).get) }
         .groupBy(_.iso).mapValues(_.size).toSeq.sortBy(_._1)
     BarChart(iso)
   }
 
   val ExposureGroup = Seq(-30, -15, -8, -4, -2, 1, 2, 4, 8, 15, 30, 60, 120, 250, 500, 1000, 2000, 4000, 8000, 16000)
   def aggExposure(exifs: Seq[Exif]): PNGExporter = {
-    val exposure: Seq[(Int, Int)] = exifs.map { x => x.copy(exposure = ExposureGroup.find(x.exposure <= _).get) }
+    val exposure: Seq[(Int, Int)] = exifs.map { x => x.cond.copy(exposure = ExposureGroup.find(x.cond.exposure <= _).get) }
         .groupBy(_.exposure).mapValues(_.size).toSeq.sortBy(_._1)
     BarChart(exposure)
   }

@@ -3,4 +3,6 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET / controllers.Assets.at(path="/public", file = "index.html")
+
+GET /*file controllers.MyAssets.at(path="/public", file)
