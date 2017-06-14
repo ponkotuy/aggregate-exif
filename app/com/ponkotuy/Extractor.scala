@@ -11,10 +11,11 @@ import scala.collection.breakOut
 
 class Extractor {
   def read(fName: String): Metadata =
-    new Metadata(JpegMetadataReader.readMetadata(new File(fName)))
-
+    read(new File(fName))
   def read(path: Path): Metadata =
-    new Metadata(JpegMetadataReader.readMetadata(path.toFile))
+    read(path.toFile)
+  def read(file: File): Metadata =
+    new Metadata(JpegMetadataReader.readMetadata(file))
 }
 
 class Metadata(orig: com.drew.metadata.Metadata) {
