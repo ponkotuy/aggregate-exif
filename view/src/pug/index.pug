@@ -2,9 +2,15 @@ doctype html
 html(lang=ja)
   head
     include template/_header
-    title FactorioRecipe
+    title CameraNamazu
     script(src='/js/index.js')
   body
     .container(role=main)
       .jumbotron
         h1 CameraNamazu
+      #upload
+        form(action='/api/image' method='POST')
+          .form-group
+            label(for='inputFile') File Input
+            input#inputFile.form-control(type='file', multiple='multiple', placeholder='Browse...')
+          button.btn.btn-primary(type='submit') Submit
