@@ -1,0 +1,13 @@
+doctype html
+html(lang=Ja)
+  head
+    include ../template/_header
+    script(src='/js/auth/reset_request.js')
+    title Request Reset Password
+  body
+    include ../template/_navbar
+    .container(role='main')
+      p パスワードリセットに必要なメールを送信することができます。登録したメールアドレスを入力してください
+      form#request(@submit.prevent, @submit='submit()')
+        input.form-control(type='email', v-model='email')
+        button.btn.btn-primary(type='submit') Send

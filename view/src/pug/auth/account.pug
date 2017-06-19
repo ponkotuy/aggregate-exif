@@ -1,0 +1,31 @@
+doctype html
+html(lang=ja)
+  head
+    include ../template/_header
+    script(src='/js/auth/create_account.js')
+    title Create Account
+  body
+    include ../template/_navbar
+    .container(role=main)
+      h1.page-header Create Account
+      .alert#message(v-if='message?', v-bind:class='type', v-text='message', role='alert')
+      form#createAccount.form-horizontal(@submit.prevent, @submit='submit()')
+        .form-group
+          label.col-sm-3(for='name') Name
+          .col-sm-9
+            input#name.form-control(type='text', v-model='name')
+        .form-group
+          label.col-sm-3(for='email') Email address
+          .col-sm-9
+            input#email.form-control(type='email', v-model='email')
+        .form-group
+          label.col-sm-3(for='password') Password
+          .col-sm-9
+            input#password.form-control(type='password', v-model='password')
+        .form-group
+          label.col-sm-3(for='checkPassword') Check password
+          .col-sm-9
+            input#checkPassword.form-control(type='password', v-model='retype')
+        .form-group
+          .col-sm-offset-3
+            button.btn.btn-primary(type='submit') Create

@@ -1,0 +1,23 @@
+doctype html
+html(lang=ja)
+  head
+    include ../template/_header
+    script(src='/js/auth/session.js')
+    title Login
+  body
+    include ../template/_navbar
+    .container(role=main)
+      .alert#message(v-if='message', :class='type', v-text='message', role='alert')
+      form#session(@submit.prevent, @submit='login()')
+        .form-group
+          label(for='email') Email address
+          input#email.form-control(type='email', v-model='email')
+        .form-group
+          label(for='password') Password
+          input#password.form-control(type='password', v-model='password')
+        button.btn.btn-primary(type='submit') Login
+      p アカウント未作成な方は
+      a.btn.btn-primary(href='/auth/account.html') Create Account
+      p パスワードを忘れてしまった方は
+      a.btn.btn-primary(href='/auth/reset_request.html') Request Reset
+
