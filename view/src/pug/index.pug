@@ -9,9 +9,3 @@ html(lang=ja)
     .container(role=main)
       .jumbotron
         h1 CameraNamazu
-      #upload
-        form(action='/api/image', method='POST', enctype='multipart/form-data')
-          .form-group
-            label(for='inputFile') File Input
-            input#inputFile.form-control(type='file', name='file', multiple='multiple', placeholder='Browse...')
-          button.btn.btn-primary(type='submit') Submit

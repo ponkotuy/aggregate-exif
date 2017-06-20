@@ -7,7 +7,7 @@ import authes.Role.NormalUser
 import com.ponkotuy.{Exif, Extractor}
 import jp.t2v.lab.play2.auth.AuthElement
 import models.ExifSerializer
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 import scalikejdbc.DB
 
 @Singleton

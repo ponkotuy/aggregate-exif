@@ -1,0 +1,14 @@
+doctype html
+html(lang=ja)
+  head
+    include template/_header
+    title CameraNamazu Uploader
+    script(src='/js/uploader.js')
+  body
+    include template/_navbar
+    .container(role=main)
+      form#uploader(action='/api/image', method='POST', enctype='multipart/form-data')
+        .form-group
+          label(for='inputFile') File Input
+          input#inputFile.form-control(type='file', name='file', multiple='multiple', placeholder='Browse...')
+        button.btn.btn-primary(type='submit') Submit

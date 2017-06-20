@@ -1,12 +1,10 @@
 $(document).ready ->
-  fetch('/api/user', {credentials: 'include'})
-    .then (res) ->
-      console.log(res)
-      if res.ok
-        res.json()
-          .then (json) -> render(json)
-      else
-        render(undefined)
+  session.then (res) ->
+    if res.ok
+      res.json()
+        .then (json) -> render(json)
+    else
+      render(undefined)
 
 render = (session) ->
   new Vue

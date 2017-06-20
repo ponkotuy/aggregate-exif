@@ -36,3 +36,11 @@
     key = ary.shift()
     obj[key] = ary.join('=')
   obj
+
+@session = fetch('/api/user', {credentials: 'include'})
+
+@mustSession = ->
+  @session.then (res) ->
+    if !res.ok
+      to = encodeURI("#{location.pathname}#{location.search}")
+      location.href = "/auth/session.html?redirect=#{to}"
