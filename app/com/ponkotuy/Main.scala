@@ -12,7 +12,7 @@ object Main extends Charting {
     val exifs = Files.list(Paths.get("/home/yosuke/103_PANA/")).toScala[List]
         .filter(_.toString.endsWith(".JPG")).flatMap { file =>
       val map = extractor.read(file).tagMaps
-      Exif.fromMap(map)
+      Exif.fromMap("Local", map)
     }
     aggISO(exifs).saveAsPNG("/tmp/iso.png")
     val zoom: Seq[(Int, Int)] = exifs.groupBy(_.cond.focal).mapValues(_.size).toSeq.sortBy(_._1)

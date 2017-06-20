@@ -13,12 +13,12 @@ case class Exif(
 object Exif {
   val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy:MM:dd HH:mm:ss")
 
-  def fromMap(map: Map[String, String]): Option[Exif] = for {
+  def fromMap(fileName: String, map: Map[String, String]): Option[Exif] = for {
     cond <- PhotoCond.fromMap(map)
     dateTime <- map.get("Date/Time").map { str => formatter.parseDateTime(str) }
     camera <- Camera.fromMap(map)
     lens <- Lens.fromMap(map)
-  } yield Exif("", cond, dateTime, camera, lens)
+  } yield Exif(fileName, cond, dateTime, camera, lens)
 
   case class Camera(maker: String, name: String)
 

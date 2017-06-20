@@ -1,6 +1,6 @@
 package com.ponkotuy
 
-import java.io.File
+import java.io.{File, InputStream}
 import java.nio.file.Path
 
 import com.drew.imaging.jpeg.JpegMetadataReader
@@ -16,6 +16,8 @@ class Extractor {
     read(path.toFile)
   def read(file: File): Metadata =
     new Metadata(JpegMetadataReader.readMetadata(file))
+  def read(is: InputStream): Metadata =
+    new Metadata(JpegMetadataReader.readMetadata(is))
 }
 
 class Metadata(orig: com.drew.metadata.Metadata) {
