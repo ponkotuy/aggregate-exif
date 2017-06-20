@@ -1,6 +1,7 @@
 package controllers
 
 import authes.AuthConfigImpl
+import authes.Role.NormalUser
 import com.google.inject.Inject
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -15,7 +16,7 @@ class UserController @Inject()() extends Controller with AuthElement with AuthCo
   import Responses._
 
 
-  def show() = StackAction { implicit req =>
+  def show() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok((loggedIn: User).asJson)
   }
 

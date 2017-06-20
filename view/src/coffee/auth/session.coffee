@@ -8,7 +8,7 @@ $(document).ready ->
     methods:
       login: ->
         json = JSON.stringify({email: @email, password: @password})
-        fetch('/api/session', {method: 'POST', headers: JSONHeader, body: json}).then (res) =>
+        fetch('/api/session', {method: 'POST', headers: JSONHeader, body: json, credentials: 'include'}).then (res) =>
           if res.ok
             location.href = fromURLParameter(location.search.slice(1)).redirect ? '/index.html'
           else

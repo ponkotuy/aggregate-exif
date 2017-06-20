@@ -1,10 +1,15 @@
-.navbar.navbar-inverse
+script(src='/js/navbar.js')
+.navbar.navbar-warning
   .container-fluid
     .navbar-header
-      a.navbar-brand(href='/') FactorioRecipe
-    .navbar-collapse.collapse.navbar-responsive-collapse
-      ul#navs.nav.navbar-nav
+      a.navbar-brand(href='/') CameraNamazu
+    #navs.navbar-collapse.collapse.navbar-responsive-collapse
+      ul.nav.navbar-nav
         li
-          a(href='/') Recipe
+          a(href='/') Graph
         li
-          a(href='/uploader.html') Uploader
+          a(href='/uploader.html') Upload
+      ul.nav.navbar-nav.navbar-right
+        li
+          a(v-if='session', href='#', @click='logout()') Logout
+          a(v-else, href='#', @click='login()') Login
