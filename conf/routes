@@ -12,7 +12,8 @@ GET /api/user/:id controllers.UserController.showMin(id: Long)
 GET /api/user controllers.UserController.show()
 POST /api/user controllers.UserController.createAccount()
 
-
 POST /api/image controllers.ImageController.upload()
+
+POST /api/exif controllers.ExifController.upload()
 
 GET /*file controllers.MyAssets.at(path="/public", file)

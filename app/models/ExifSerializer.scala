@@ -1,7 +1,7 @@
 package models
 
 import com.github.nscala_time.time.Imports._
-import com.ponkotuy.Exif
+import com.ponkotuy.queries.Exif
 import scalikejdbc._
 
 class ExifSerializer(exif: Exif) {

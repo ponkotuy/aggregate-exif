@@ -1,6 +1,5 @@
 package authes
 
-import io.circe.{Decoder, Encoder}
 import scalikejdbc.TypeBinder
 
 sealed abstract class Role(val value: Int)
@@ -15,7 +14,4 @@ object Role {
 
   implicit def typeBinder: TypeBinder[Int] = TypeBinder.int
   implicit val impl: TypeBinder[Role] = TypeBinder(_ getInt _)(_ getInt _).map { i => find(i).getOrElse(NormalUser) }
-
-  implicit val encode: Encoder[Role] = io.circe.generic.semiauto.deriveEncoder[Role]
-  implicit val decode: Decoder[Role] = io.circe.generic.semiauto.deriveDecoder[Role]
 }

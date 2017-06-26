@@ -1,8 +1,8 @@
 package queries
 
 import authes.Role
-import models.User
 import com.github.nscala_time.time.Imports._
+import models.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 case class CreateUser(name: String, email: String, password: String) {
@@ -13,6 +13,6 @@ case class CreateUser(name: String, email: String, password: String) {
 }
 
 object BCryptEncoder {
-  val bcrypt = new BCryptPasswordEncoder()
+  val bcrypt = new BCryptPasswordEncoder(12)
   def apply(pass: String) = bcrypt.encode(pass)
 }
