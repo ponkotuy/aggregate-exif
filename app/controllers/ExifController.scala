@@ -7,12 +7,12 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.native.Json4s
 import com.ponkotuy.queries.Exif
 import jp.t2v.lab.play2.auth.AuthElement
-import models.ExifSerializer
-import org.json4s.DefaultFormats
+import models.{ExifSerializer, Image}
+import org.json4s.{DefaultFormats, Extraction}
 import org.json4s.ext.JodaTimeSerializers
 import play.api.Logger
-import play.api.mvc.Controller
-import scalikejdbc.DB
+import play.api.mvc.{Action, Controller}
+import scalikejdbc._
 
 @Singleton
 class ExifController @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
@@ -31,5 +31,10 @@ class ExifController @Inject()(json4s: Json4s) extends Controller with AuthEleme
         } else BadRequest("Duplicated?")
       }
     }
+  }
+
+  def list(userId: Long) = Action {
+    import models.Aliases.i
+    Ok(Extraction.decompose(Image.findAllBy(sqls.eq(i.userId, userId))))
   }
 }

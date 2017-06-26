@@ -14,6 +14,8 @@ POST /api/user controllers.UserController.createAccount()
 
 POST /api/image controllers.ImageController.upload()
 
+GET /api/user/:userId/exifs controllers.ExifController.list(userId: Long)
+GET /api/user/:userId/iso controllers.GraphController.iso(userId: Long)
 POST /api/exif controllers.ExifController.upload()
 
 GET /*file controllers.MyAssets.at(path="/public", file)
