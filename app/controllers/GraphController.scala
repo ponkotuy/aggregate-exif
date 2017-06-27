@@ -20,6 +20,13 @@ class GraphController @Inject()(json4s: Json4s) extends Controller {
     val result = counts.map { case (iso, count) => IsoElement(iso, count) }
     Ok(Extraction.decompose(result))
   }
+
+  def focal(userId: Long) = Action{
+    val counts = Image.groupByCount(sqls.eq(i.userId, userId), cond.focal35)(AutoSession, implicitly[TypeBinder[Int]])
+    val result = counts.map { case (focal, count) => FocalElement(focal, count)}
+    Ok(Extraction.decompose(result))
+  }
 }
 
 case class IsoElement(iso: Int, count: Int)
+case class FocalElement(focal: Int, count: Int)
