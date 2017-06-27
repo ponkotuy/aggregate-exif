@@ -1,14 +1,30 @@
 $(document).ready ->
   params = fromURLParameter(location.search.slice(1))
   id = params.userId
-  fetch("/api/user/#{id}/iso")
-    .then (res) -> res.json()
-    .then (json) -> renderGraph(json)
   fetch("/api/user/#{id}/focal")
     .then (res) -> res.json()
     .then (json) -> renderFocalGraph(json)
+  fetch("/api/user/#{id}/iso")
+    .then (res) -> res.json()
+    .then (json) -> renderISOGraph(json)
+  fetch("/api/user/#{id}/f_number")
+    .then (res) -> res.json()
+    .then (json) -> renderFNumberGraph(json)
 
-renderGraph = (elems) ->
+renderFocalGraph = (elems) ->
+  ctx = getCtx('focalChart')
+  data = elems.map (elem) -> {x: elem['focal'], y: elem['count']}
+  new Chart ctx, {
+    type: 'line'
+    data:
+      datasets: [{
+        label: 'image counts'
+        data: data
+      }]
+    options: _.merge(barOptions('Focal count (35mm equivalent)'), logarithmicOptions())
+  }
+
+renderISOGraph = (elems) ->
   ctx = getCtx('isoChart')
   elemGroup = _.groupBy elems, (elem) ->
     Math.floor(Math.log2(elem['iso'] / 100))
@@ -31,26 +47,19 @@ renderGraph = (elems) ->
     options: barOptions('ISO count')
   }
 
-renderFocalGraph = (elems) ->
-  ctx = getCtx('focalChart')
-  data = elems.map (elem) -> {x: elem['focal'], y: elem['count']}
-  labels = elems.map (elem) -> elem['focal']
-  logarithmicOptions =
-    scales:
-      xAxes: [{
-        type: 'logarithmic',
-        ticks:
-          callback: Chart.Ticks.formatters.linear
-      }]
+renderFNumberGraph = (elems) ->
+  ctx = getCtx('fNumberChart')
+  data = elems.map (elem) -> {x: elem['fNumber'], y: elem['count']}
+  labels = elems.map (elem) -> elem['fNumber']
   new Chart ctx, {
-    type: 'line'
+    type: 'scatter'
     data:
       labels: labels
       datasets: [{
         label: 'image counts'
         data: data
       }]
-    options: _.merge(barOptions('Focal count (35mm equivalent)'), logarithmicOptions)
+    options: _.merge(barOptions('F-Number count'), logarithmicOptions())
   }
 
 getCtx = (id) -> document.getElementById(id).getContext('2d')
@@ -67,3 +76,11 @@ barOptions = (title) ->
     display: true
     text: title
     fontSize: 18
+
+logarithmicOptions = ->
+  scales:
+    xAxes: [{
+      type: 'logarithmic',
+      ticks:
+        callback: Chart.Ticks.formatters.linear
+    }]
