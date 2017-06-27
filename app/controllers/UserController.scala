@@ -19,9 +19,13 @@ class UserController @Inject()(json4s: Json4s) extends Controller with AuthEleme
 
   implicit def formats = DefaultFormats
 
-
   def show() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(loggedIn: User))
+  }
+
+  def list() = Action {
+    val users = User.findAll().map(_.minimal)
+    Ok(Extraction.decompose(users))
   }
 
   def showMin(id: Long) = Action {

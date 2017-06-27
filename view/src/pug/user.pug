@@ -1,0 +1,11 @@
+doctype html
+html(lang=ja)
+  head
+    include template/_header
+    title CameraNamazu Graph
+    script(src='/js/user.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js')
+  body
+    include template/_navbar
+    .container(role=main)
+      canvas#isoChart(width=640, height=480)

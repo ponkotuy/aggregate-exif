@@ -56,7 +56,7 @@ object Image extends SkinnyCRUDMapperWithId[Long, Image] {
     'createdAt -> i.createdAt
   )
 
-  def groupByCount[T](where: SQLSyntax, col: SQLSyntax)(typeBinder: TypeBinder[T])(implicit session: DBSession): Seq[(T, Int)] = withSQL {
+  def groupByCount[T](where: SQLSyntax, col: SQLSyntax)(implicit session: DBSession, typeBinder: TypeBinder[T]): Seq[(T, Int)] = withSQL {
     import Aliases.{i, cond}
     select(col, sqls.count(sqls"*")).from(Image as i)
         .innerJoin(Condition as cond).on(i.id, cond.imageId)
@@ -64,7 +64,7 @@ object Image extends SkinnyCRUDMapperWithId[Long, Image] {
         .groupBy(col)
         .orderBy(col)
   }.map { rs =>
-    val value = rs.get[T](1)(typeBinder)
+    val value = rs.get[T](1)
     val count = rs.int(2)
     (value, count)
   }.collection.apply()

@@ -3,9 +3,13 @@ html(lang=ja)
   head
     include template/_header
     title CameraNamazu
-    //script(src='/js/index.js')
+    script(src='/js/index.js')
   body
     include template/_navbar
     .container(role=main)
       .jumbotron
         h1 CameraNamazu
+      h3 Public User
+      ul#users
+        li(v-for='user in users')
+          a(:href='"/user.html?userId=" + user.id', v-text='user.name')

@@ -8,6 +8,7 @@ GET / controllers.Assets.at(path="/public", file = "index.html")
 POST /api/session controllers.SessionController.login()
 DELETE /api/session controllers.SessionController.logout()
 
+GET /api/users controllers.UserController.list()
 GET /api/user/:id controllers.UserController.showMin(id: Long)
 GET /api/user controllers.UserController.show()
 POST /api/user controllers.UserController.createAccount()

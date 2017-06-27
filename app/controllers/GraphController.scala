@@ -16,7 +16,7 @@ class GraphController @Inject()(json4s: Json4s) extends Controller {
   implicit def formats = DefaultFormats
 
   def iso(userId: Long) = Action{
-    val counts = Image.groupByCount(sqls.eq(i.userId, userId), cond.iso)(implicitly[TypeBinder[Int]])(AutoSession)
+    val counts = Image.groupByCount(sqls.eq(i.userId, userId), cond.iso)(AutoSession, implicitly[TypeBinder[Int]])
     val result = counts.map { case (iso, count) => IsoElement(iso, count) }
     Ok(Extraction.decompose(result))
   }
