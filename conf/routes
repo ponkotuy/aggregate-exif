@@ -20,6 +20,7 @@ GET /api/user/:userId/focal controllers.GraphController.focal(userId: Long)
 GET /api/user/:userId/iso controllers.GraphController.iso(userId: Long)
 GET /api/user/:userId/f_number controllers.GraphController.fNumber(userId: Long)
 GET /api/user/:userId/exposure controllers.GraphController.exposure(userId: Long)
+GET /api/user/:userId/lens controllers.GraphController.lens(userId: Long)
 POST /api/exif controllers.ExifController.upload()
 
 GET /*file controllers.MyAssets.at(path="/public", file)

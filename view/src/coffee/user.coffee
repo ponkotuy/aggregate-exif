@@ -13,6 +13,9 @@ $(document).ready ->
   fetch("/api/user/#{id}/exposure")
     .then (res) -> res.json()
     .then (json) -> renderExposureGraph(json)
+  fetch("/api/user/#{id}/lens")
+    .then (res) -> res.json()
+    .then (json) -> renderLensGraph(json)
 
 renderFocalGraph = (elems) ->
   ctx = getCtx('focalChart')
@@ -23,6 +26,8 @@ renderFocalGraph = (elems) ->
       datasets: [{
         label: 'image counts'
         data: data
+        borderColor: colorSet(1)[0]
+        backgroundColor: colorSet(0.5)[0]
       }]
     options: _.merge(barOptions('Focal count (35mm equivalent)'), logarithmicOptions(), xScaleLabel('mm'))
   }
@@ -61,6 +66,8 @@ renderFNumberGraph = (elems) ->
       datasets: [{
         label: 'image counts'
         data: data
+        borderColor: colorSet(1)[1]
+        backgroundColor: colorSet(0.5)[1]
       }]
     options: _.merge(barOptions('F-Number count'), logarithmicOptions())
   }
@@ -88,6 +95,28 @@ renderExposureGraph = (elems) ->
       }]
     options: barOptions('Shutter speed count')
   }
+
+renderLensGraph = (elems) ->
+  ctx = getCtx('lensChart')
+  values = elems.map (elem) -> elem['count']
+  labels = elems.map (elem) -> elem['lens']
+  new Chart ctx, {
+    type: 'pie'
+    data:
+      labels: labels
+      datasets: [{
+        data: values
+        backgroundColor: colorSet(0.5)
+      }]
+  }
+
+colorSet = (a) -> [
+  "rgba(0, 65, 255, #{a})",
+  "rgba(255, 40, 0, #{a})",
+  "rgba(53, 161, 107, #{a})",
+  "rgba(250, 245, 0, #{a})",
+  "rgba(102, 204, 255, #{a})"
+]
 
 getCtx = (id) -> document.getElementById(id).getContext('2d')
 
