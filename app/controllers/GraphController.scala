@@ -44,14 +44,14 @@ class GraphController @Inject()(json4s: Json4s) extends Controller {
   def lens(userId: Long) = Action{
     val counts = Image.groupByCount(sqls.eq(i.userId, userId), i.lensId)(AutoSession, implicitly[TypeBinder[Long]])
     val lens: Map[Long, String] = Lens.findAll().map { l => l.id -> l.name }(breakOut)
-    val result = counts.map { case (id, count) => LensElement(lens(id), count) }
+    val result = counts.map { case (id, count) => LensElement(id, lens(id), count) }
     Ok(Extraction.decompose(result))
   }
 
   def camera(userId: Long) = Action{
     val counts = Image.groupByCount(sqls.eq(i.userId, userId), i.cameraId)(AutoSession, implicitly[TypeBinder[Long]])
     val cameras: Map[Long, String] = Camera.findAll().map { c => c.id -> s"${c.name}(${c.maker})" }(breakOut)
-    val result = counts.map { case (id, count) => CameraElement(cameras(id), count) }
+    val result = counts.map { case (id, count) => CameraElement(id, cameras(id), count) }
     Ok(Extraction.decompose(result))
   }
 }
@@ -60,5 +60,5 @@ case class IsoElement(iso: Int, count: Int)
 case class FocalElement(focal: Int, count: Int)
 case class FNumberElement(fNumber: Double, count: Int)
 case class ExposureElement(exposure: Int, count: Int)
-case class LensElement(lens: String, count: Int)
-case class CameraElement(camera: String, count: Int)
+case class LensElement(id: Long, lens: String, count: Int)
+case class CameraElement(id: Long, camera: String, count: Int)

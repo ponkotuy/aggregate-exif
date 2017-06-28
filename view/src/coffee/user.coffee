@@ -20,19 +20,32 @@ $(document).ready ->
     .then (res) -> res.json()
     .then (json) -> renderLensGraph(json)
 
+focalGroup = [10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 400, 500, 600, 800, 1000, 1500, 2000]
 renderFocalGraph = (elems) ->
   ctx = getCtx('focalChart')
-  data = elems.map (elem) -> {x: elem['focal'], y: elem['count']}
+  _elems = _.chain(focalGroup).zip(_.tail(focalGroup))
+    .map (xs) ->
+      targets = _.filter elems, (elem) -> xs[0] <= elem['focal'] && elem['focal'] < xs[1]
+      count = _.sumBy targets, (x) -> x['count']
+      {focal: xs[0], count: count}
+    .dropWhile (x) -> x['count'] == 0
+    .dropRightWhile (x) -> x['count'] == 0
+    .value()
+  labels = _elems.map (elem) -> elem['focal']
+  values = _elems.map (elem) -> elem['count']
+  color = labels.map (focal) ->
+    v = Math.round(gradient(Math.log2(20), Math.log2(600), 192, 0, Math.log2(focal)))
+    "rgba(#{v}, #{v}, #{v}, 0.8)"
   new Chart ctx, {
-    type: 'line'
+    type: 'bar'
     data:
+      labels: labels
       datasets: [{
         label: 'image counts'
-        data: data
-        borderColor: colorSet(1)[0]
-        backgroundColor: colorSet(0.5)[0]
+        data: values
+        backgroundColor: color
       }]
-    options: _.merge(barOptions('Focal count (35mm equivalent)'), logarithmicOptions(), xScaleLabel('mm'))
+    options: _.merge(barOptions('Focal count (35mm equivalent)'), xScaleLabel('mm'))
   }
 
 renderISOGraph = (elems) ->
@@ -58,21 +71,33 @@ renderISOGraph = (elems) ->
     options: barOptions('ISO count')
   }
 
+fNumberGroup = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30]
 renderFNumberGraph = (elems) ->
   ctx = getCtx('fNumberChart')
-  data = elems.map (elem) -> {x: elem['fNumber'], y: elem['count']}
-  labels = elems.map (elem) -> elem['fNumber']
+  _elems = _.chain(fNumberGroup).zip(_.tail(fNumberGroup))
+    .map (xs) ->
+      targets = _.filter elems, (elem) -> xs[0] <= elem['fNumber'] && elem['fNumber'] < xs[1]
+      count = _.sumBy targets, (x) -> x['count']
+      {fNumber: xs[0], count: count}
+    .dropWhile (x) -> x['count'] == 0
+    .dropRightWhile (x) -> x['count'] == 0
+    .value()
+  console.log(_elems)
+  labels = _elems.map (elem) -> elem['fNumber']
+  values = _elems.map (elem) -> elem['count']
+  color = labels.map (fNumber) ->
+    v = Math.round(gradient(Math.log2(1), Math.log2(10), 192, 0, Math.log2(fNumber)))
+    "rgba(#{v}, #{v}, #{v}, 0.8)"
   new Chart ctx, {
-    type: 'scatter'
+    type: 'bar'
     data:
       labels: labels
       datasets: [{
         label: 'image counts'
-        data: data
-        borderColor: colorSet(1)[1]
-        backgroundColor: colorSet(0.5)[1]
+        data: values
+        backgroundColor: color
       }]
-    options: _.merge(barOptions('F-Number count'), logarithmicOptions())
+    options: barOptions('F-Number count')
   }
 
 exposureGroup = [-30, -15, -8, -4, -2, 1, 2, 4, 8, 15, 30, 60, 125, 250, 500, 1000, 2000, 4000, 8000, 16000].reverse()
