@@ -3,7 +3,7 @@ package controllers
 import javax.inject._
 
 import com.github.tototoshi.play2.json4s.native.Json4s
-import models.{Image, Lens}
+import models.{Camera, Image, Lens}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
 import scalikejdbc._
@@ -47,6 +47,13 @@ class GraphController @Inject()(json4s: Json4s) extends Controller {
     val result = counts.map { case (id, count) => LensElement(lens(id), count) }
     Ok(Extraction.decompose(result))
   }
+
+  def camera(userId: Long) = Action{
+    val counts = Image.groupByCount(sqls.eq(i.userId, userId), i.cameraId)(AutoSession, implicitly[TypeBinder[Long]])
+    val cameras: Map[Long, String] = Camera.findAll().map { c => c.id -> s"${c.name}(${c.maker})" }(breakOut)
+    val result = counts.map { case (id, count) => CameraElement(cameras(id), count) }
+    Ok(Extraction.decompose(result))
+  }
 }
 
 case class IsoElement(iso: Int, count: Int)
@@ -54,3 +61,4 @@ case class FocalElement(focal: Int, count: Int)
 case class FNumberElement(fNumber: Double, count: Int)
 case class ExposureElement(exposure: Int, count: Int)
 case class LensElement(lens: String, count: Int)
+case class CameraElement(camera: String, count: Int)

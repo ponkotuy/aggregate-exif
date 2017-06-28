@@ -13,6 +13,9 @@ $(document).ready ->
   fetch("/api/user/#{id}/exposure")
     .then (res) -> res.json()
     .then (json) -> renderExposureGraph(json)
+  fetch("/api/user/#{id}/camera")
+    .then (res) -> res.json()
+    .then (json) -> renderCameraGraph(json)
   fetch("/api/user/#{id}/lens")
     .then (res) -> res.json()
     .then (json) -> renderLensGraph(json)
@@ -94,6 +97,20 @@ renderExposureGraph = (elems) ->
         backgroundColor: color
       }]
     options: barOptions('Shutter speed count')
+  }
+
+renderCameraGraph = (elems) ->
+  ctx = getCtx('cameraChart')
+  values = elems.map (elem) -> elem['count']
+  labels = elems.map (elem) -> elem['camera']
+  new Chart ctx, {
+    type: 'pie'
+    data:
+      labels: labels
+      datasets: [{
+        data: values
+        backgroundColor: colorSet(0.5)
+      }]
   }
 
 renderLensGraph = (elems) ->
