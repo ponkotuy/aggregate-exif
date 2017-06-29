@@ -1,24 +1,36 @@
 $(document).ready ->
-  params = fromURLParameter(location.search.slice(1))
-  id = params.userId
-  fetch("/api/user/#{id}/focal")
+  params = new URLSearchParams(location.search.slice(1))
+  id = params.get('userId')
+  fetch("/api/user/#{id}/focal?#{params.toString()}")
     .then (res) -> res.json()
-    .then (json) -> renderFocalGraph(json)
-  fetch("/api/user/#{id}/iso")
+    .then (json) ->
+      chart = renderFocalGraph(json)
+      clickFocal(chart)
+  fetch("/api/user/#{id}/iso?#{params.toString()}")
     .then (res) -> res.json()
-    .then (json) -> renderISOGraph(json)
-  fetch("/api/user/#{id}/f_number")
+    .then (json) ->
+      chart = renderISOGraph(json)
+      clickISO(chart)
+  fetch("/api/user/#{id}/f_number?#{params.toString()}")
     .then (res) -> res.json()
-    .then (json) -> renderFNumberGraph(json)
-  fetch("/api/user/#{id}/exposure")
+    .then (json) ->
+      chart = renderFNumberGraph(json)
+      clickFNumber(chart)
+  fetch("/api/user/#{id}/exposure?#{params.toString()}")
     .then (res) -> res.json()
-    .then (json) -> renderExposureGraph(json)
-  fetch("/api/user/#{id}/camera")
+    .then (json) ->
+      chart = renderExposureGraph(json)
+      clickExposure(chart)
+  fetch("/api/user/#{id}/camera?#{params.toString()}")
     .then (res) -> res.json()
-    .then (json) -> renderCameraGraph(json)
-  fetch("/api/user/#{id}/lens")
+    .then (json) ->
+      chart = renderCameraGraph(json)
+      clickCamera(chart)
+  fetch("/api/user/#{id}/lens?#{params.toString()}")
     .then (res) -> res.json()
-    .then (json) -> renderLensGraph(json)
+    .then (json) ->
+      chart = renderLensGraph(json)
+      clickLens(chart)
 
 focalGroup = [10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 400, 500, 600, 800, 1000, 1500, 2000]
 renderFocalGraph = (elems) ->
@@ -48,6 +60,12 @@ renderFocalGraph = (elems) ->
     options: _.merge(barOptions('Focal count (35mm equivalent)'), xScaleLabel('mm'))
   }
 
+clickFocal = (chart) ->
+  document.getElementById('focalChart').onclick = (evt) ->
+    points = chart.getElementsAtEvent(evt)
+    focal = points[0]._model.label
+    addParams({focal: focal})
+
 renderISOGraph = (elems) ->
   ctx = getCtx('isoChart')
   elemGroup = _.groupBy elems, (elem) ->
@@ -71,6 +89,12 @@ renderISOGraph = (elems) ->
     options: barOptions('ISO count')
   }
 
+clickISO = (chart) ->
+  document.getElementById('isoChart').onclick = (evt) ->
+    points = chart.getElementsAtEvent(evt)
+    iso = points[0]._model.label
+    addParams({iso: iso})
+
 fNumberGroup = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30]
 renderFNumberGraph = (elems) ->
   ctx = getCtx('fNumberChart')
@@ -82,7 +106,6 @@ renderFNumberGraph = (elems) ->
     .dropWhile (x) -> x['count'] == 0
     .dropRightWhile (x) -> x['count'] == 0
     .value()
-  console.log(_elems)
   labels = _elems.map (elem) -> elem['fNumber']
   values = _elems.map (elem) -> elem['count']
   color = labels.map (fNumber) ->
@@ -99,6 +122,13 @@ renderFNumberGraph = (elems) ->
       }]
     options: barOptions('F-Number count')
   }
+
+clickFNumber = (chart) ->
+  document.getElementById('fNumberChart').onclick = (evt) ->
+    points = chart.getElementsAtEvent(evt)
+    fNumber = points[0]._model.label
+    addParams({fNumber: fNumber})
+
 
 exposureGroup = [-30, -15, -8, -4, -2, 1, 2, 4, 8, 15, 30, 60, 125, 250, 500, 1000, 2000, 4000, 8000, 16000].reverse()
 renderExposureGraph = (elems) ->
@@ -124,10 +154,18 @@ renderExposureGraph = (elems) ->
     options: barOptions('Shutter speed count')
   }
 
+clickExposure = (chart) ->
+  document.getElementById('exposureChart').onclick = (evt) ->
+    points = chart.getElementsAtEvent(evt)
+    exposure = points[0]._model.label
+    addParams({exposure: exposure})
+
+cameraIds = []
 renderCameraGraph = (elems) ->
   ctx = getCtx('cameraChart')
   values = elems.map (elem) -> elem['count']
   labels = elems.map (elem) -> elem['camera']
+  cameraIds = elems.map (elem) -> elem['id']
   new Chart ctx, {
     type: 'pie'
     data:
@@ -138,10 +176,18 @@ renderCameraGraph = (elems) ->
       }]
   }
 
+clickCamera = (chart) ->
+  document.getElementById('cameraChart').onclick = (evt) ->
+    points = chart.getElementsAtEvent(evt)
+    camera = cameraIds[points[0]._index]
+    addParams({camera: camera})
+
+lensIds = []
 renderLensGraph = (elems) ->
   ctx = getCtx('lensChart')
   values = elems.map (elem) -> elem['count']
   labels = elems.map (elem) -> elem['lens']
+  lensIds = elems.map (elem) -> elem['id']
   new Chart ctx, {
     type: 'pie'
     data:
@@ -151,6 +197,12 @@ renderLensGraph = (elems) ->
         backgroundColor: colorSet(0.5)
       }]
   }
+
+clickLens = (chart) ->
+  document.getElementById('lensChart').onclick = (evt) ->
+    points = chart.getElementsAtEvent(evt)
+    lens = lensIds[points[0]._index]
+    addParams({lens: lens})
 
 colorSet = (a) -> [
   "rgba(0, 65, 255, #{a})",
@@ -190,3 +242,11 @@ xScaleLabel = (label) ->
         display: true
         labelString: label
     }]
+
+addParams = (params) ->
+  p = new URLSearchParams(location.search.slice(1))
+  for k, v of params
+    if p.has(k)
+      p.delete(k)
+    p.append(k, v)
+  location.search = p.toString()
