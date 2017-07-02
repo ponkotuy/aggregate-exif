@@ -226,6 +226,12 @@ barOptions = (title) ->
     display: true
     text: title
     fontSize: 18
+  scales:
+    yAxes: [{
+      ticks: {
+        beginAtZero: true
+      }
+    }]
 
 logarithmicOptions = ->
   scales:

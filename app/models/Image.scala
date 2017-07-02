@@ -70,8 +70,9 @@ object Image extends SkinnyCRUDMapperWithId[Long, Image] {
   }.collection.apply()
 
   def groupByCount[T](where: SQLSyntax, col: SQLSyntax)(implicit session: DBSession, typeBinder: TypeBinder[T]): Seq[(T, Int)] = withSQL {
-    import Aliases.i
+    import Aliases.{cond, i}
     select(col, sqls.count(sqls"*").append(sqls" as count")).from(Image as i)
+        .innerJoin(Condition as cond).on(i.id, cond.imageId)
         .where(where)
         .groupBy(col)
         .orderBy(sqls"count".desc)
