@@ -1,5 +1,6 @@
 $(document).ready ->
   params = new URLSearchParams(location.search.slice(1))
+  renderFilters(params)
   id = params.get('userId')
   fetch("/api/user/#{id}/focal?#{params.toString()}")
     .then (res) -> res.json()
@@ -11,7 +12,7 @@ $(document).ready ->
     .then (json) ->
       chart = renderISOGraph(json)
       clickISO(chart)
-  fetch("/api/user/#{id}/f_number?#{params.toString()}")
+  fetch("/api/user/#{id}/fNumber?#{params.toString()}")
     .then (res) -> res.json()
     .then (json) ->
       chart = renderFNumberGraph(json)
@@ -31,6 +32,34 @@ $(document).ready ->
     .then (json) ->
       chart = renderLensGraph(json)
       clickLens(chart)
+
+renderFilters = (params) ->
+  camera = if params.get('camera')
+    fetch("/api/camera/#{params.get('camera')}")
+      .then (res) -> res.json()
+  else Promise.resolve([null])
+  lens = if params.get('lens')
+    fetch("/api/lens/#{params.get('lens')}")
+      .then (res) -> res.json()
+  else Promise.resolve([null])
+  Promise.all([camera, lens]).then (values) ->
+    console.log(values)
+    filters = {
+      focal: params.get('focal'),
+      iso: params.get('iso'),
+      fNumber: params.get('fNumber'),
+      exposure: params.get('exposure'),
+      camera: values[0]?.name,
+      lens: values[1]?.name
+    }
+    new Vue
+      el: '#filters'
+      data:
+        filters: _.pickBy filters, _.identity
+      methods:
+        remove: (param) =>
+          params.delete(param)
+          location.search = params.toString()
 
 focalGroup = [10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 400, 500, 600, 800, 1000, 1500, 2000]
 renderFocalGraph = (elems) ->

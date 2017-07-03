@@ -8,6 +8,13 @@ html(lang=ja)
   body
     include template/_navbar
     .container(role=main)
+      #filters
+        .alert.alert-info(v-for='(value, key) in filters' role='alert')
+          button.close(type='button', @click='remove(key)')
+            span(aria-hidden='true') &times;
+          span
+            strong(v-text='key + ":"')
+            span(v-text='value')
       canvas#focalChart
       canvas#isoChart
       canvas#fNumberChart
