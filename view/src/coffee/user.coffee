@@ -1,6 +1,21 @@
 $(document).ready ->
+  document.getElementById('graphTab').className = 'active'
   params = new URLSearchParams(location.search.slice(1))
   renderFilters(params)
+  if params.get('userId')
+    render(params)
+  else
+    fetch('/api/user', {credentials: 'include'})
+      .then (res) ->
+        if res.ok
+          res.json()
+            .then (json) ->
+              addParams({userId: json.id})
+        else
+          uri = encodeURIComponent(location.href)
+          location.href = "/auth/session.html?to=#{uri}"
+
+render = (params) ->
   id = params.get('userId')
   fetch("/api/user/#{id}/focal?#{params.toString()}")
     .then (res) -> res.json()
@@ -43,7 +58,6 @@ renderFilters = (params) ->
       .then (res) -> res.json()
   else Promise.resolve([null])
   Promise.all([camera, lens]).then (values) ->
-    console.log(values)
     filters = {
       focal: params.get('focal'),
       iso: params.get('iso'),
@@ -93,7 +107,8 @@ clickFocal = (chart) ->
   document.getElementById('focalChart').onclick = (evt) ->
     points = chart.getElementsAtEvent(evt)
     focal = points[0]._model.label
-    addParams({focal: focal})
+    focalMax = (_.dropWhile focalGroup, (x) -> x <= focal)[0] || 10000000
+    addParams({focal: "#{focal}_#{focalMax}"})
 
 renderISOGraph = (elems) ->
   ctx = getCtx('isoChart')
@@ -122,7 +137,8 @@ clickISO = (chart) ->
   document.getElementById('isoChart').onclick = (evt) ->
     points = chart.getElementsAtEvent(evt)
     iso = points[0]._model.label
-    addParams({iso: iso})
+    isoMax = iso * 2
+    addParams({iso: "#{iso}_#{isoMax}"})
 
 fNumberGroup = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30]
 renderFNumberGraph = (elems) ->
@@ -156,7 +172,8 @@ clickFNumber = (chart) ->
   document.getElementById('fNumberChart').onclick = (evt) ->
     points = chart.getElementsAtEvent(evt)
     fNumber = points[0]._model.label
-    addParams({fNumber: fNumber})
+    fNumberMax = (_.dropWhile fNumberGroup, (x) -> x <= fNumber)[0] || 10000000
+    addParams({fNumber: "{fNumber}_#{fNumberMax}"})
 
 
 exposureGroup = [-30, -15, -8, -4, -2, 1, 2, 4, 8, 15, 30, 60, 125, 250, 500, 1000, 2000, 4000, 8000, 16000].reverse()
@@ -187,7 +204,8 @@ clickExposure = (chart) ->
   document.getElementById('exposureChart').onclick = (evt) ->
     points = chart.getElementsAtEvent(evt)
     exposure = points[0]._model.label
-    addParams({exposure: exposure})
+    exposureMax = (_.dropWhile exposureGroup, (x) -> exposure <= x)[0] || -99999
+    addParams({exposure: "#{exposure}_#{exposureMax}"})
 
 cameraIds = []
 renderCameraGraph = (elems) ->

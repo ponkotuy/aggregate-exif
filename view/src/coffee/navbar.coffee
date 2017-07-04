@@ -14,7 +14,7 @@ render = (session) ->
     methods:
       login: ->
         to = encodeURI("#{location.pathname}#{location.search}")
-        location.href = "/auth/session.html?redirect=#{to}"
+        location.href = "/auth/session.html?to=#{to}"
       logout: ->
         fetch('/api/session', {method: 'DELETE', credentials: 'include'})
           .then -> location.reload(false)
