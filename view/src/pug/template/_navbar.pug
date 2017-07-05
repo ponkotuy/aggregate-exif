@@ -10,6 +10,16 @@ script(src='/js/navbar.js')
         li#uploadTab
           a(href='/uploader.html') Upload
       ul.nav.navbar-nav.navbar-right
-        li
-          a(v-if='session', href='#', @click='logout()') Logout
-          a(v-else, href='#', @click='login()') Login
+        li.dropdown(v-if='session')
+          a.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+            span(v-text='session.name')
+            span.caret
+          ul.dropdown-menu
+            li
+              a(v-if='session.public', href='#', @click='public(false)') 非公開にする
+              a(v-else, href='#', @click='public(true)') 公開する
+            li.divider(role='separator')
+            li
+              a(v-if='session', href='#', @click='logout()') Logout
+        li(v-else)
+          a(href='#', @click='login()') Login

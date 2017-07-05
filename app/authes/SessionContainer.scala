@@ -39,7 +39,6 @@ class SessionContainer extends IdContainer[Long] {
     val token = Iterator.continually(random.nextInt(table.length)).map(table).take(TokenSize).mkString
     if (get(token).isDefined) generate else token
   }
-
 }
 
 object SessionContainer {

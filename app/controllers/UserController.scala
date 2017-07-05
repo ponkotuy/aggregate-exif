@@ -20,12 +20,14 @@ class UserController @Inject()(json4s: Json4s) extends Controller with AuthEleme
   implicit def formats = DefaultFormats
 
   def show() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    Ok(Extraction.decompose(loggedIn: User))
+    Ok(Extraction.decompose(loggedIn.minimal))
   }
 
-  def list() = Action {
-    val users = User.findAll().map(_.minimal)
-    Ok(Extraction.decompose(users))
+  def list(public: Boolean) = Action {
+    import models.Aliases.u
+    val users = if(public) User.findAllBy(sqls.eq(u.public, true))
+    else User.findAll()
+    Ok(Extraction.decompose(users.map(_.minimal)))
   }
 
   def showMin(id: Long) = Action {
@@ -39,5 +41,10 @@ class UserController @Inject()(json4s: Json4s) extends Controller with AuthEleme
       User.create(user.user())(AutoSession)
       Success
     }
+  }
+
+  def public(next: Boolean) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    val result = User.updateById(loggedIn.id).withAttributes('public -> next)(AutoSession)
+    if(result > 0) Success else InternalServerError
   }
 }

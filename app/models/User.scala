@@ -5,8 +5,15 @@ import com.github.nscala_time.time.Imports._
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class User(id: Long, name: String, email: String, role: Role, password: String, createdAt: DateTime) {
-  lazy val minimal = UserMinimal(id = id, name = name,createdAt = createdAt)
+case class User(
+    id: Long,
+    name: String,
+    email: String,
+    role: Role,
+    password: String,
+    public: Boolean,
+    createdAt: DateTime) {
+  lazy val minimal = UserMinimal(id = id, name = name, public = public, createdAt = createdAt)
 }
 
 object User extends SkinnyCRUDMapperWithId[Long, User] {
@@ -18,6 +25,7 @@ object User extends SkinnyCRUDMapperWithId[Long, User] {
     email = rs.get(n.email),
     role = Role.find(rs.get(n.role)).get,
     password = rs.get(n.password),
+    public = rs.get(n.public),
     createdAt = rs.get(n.createdAt)
   )
 
@@ -30,8 +38,9 @@ object User extends SkinnyCRUDMapperWithId[Long, User] {
       'email -> u.email,
       'role -> u.role.value,
       'password -> u.password,
+      'public -> u.public,
       'createdAt -> u.createdAt
     )
 }
 
-case class UserMinimal(id: Long, name: String, createdAt: DateTime)
+case class UserMinimal(id: Long, name: String, public: Boolean, createdAt: DateTime)

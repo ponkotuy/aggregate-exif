@@ -41,6 +41,6 @@
 
 @mustSession = ->
   @session.then (res) ->
-    if !res.ok
-      to = encodeURI("#{location.pathname}#{location.search}")
-      location.href = "/auth/session.html?redirect=#{to}"
+    unless res.ok
+      to = encodeURIComponent("#{location.href}")
+      location.href = "/auth/session.html?to=#{to}"

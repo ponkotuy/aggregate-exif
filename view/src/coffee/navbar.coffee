@@ -18,3 +18,10 @@ render = (session) ->
       logout: ->
         fetch('/api/session', {method: 'DELETE', credentials: 'include'})
           .then -> location.reload(false)
+      public: (flag) ->
+        res = if(flag)
+          fetch('/api/user/public', {method: 'PUT', credentials: 'include'})
+        else
+          fetch('/api/user/private', {method: 'PUT', credentials: 'include'})
+        res.then ->
+          location.reload(false)

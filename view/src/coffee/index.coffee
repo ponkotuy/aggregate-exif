@@ -1,5 +1,5 @@
 $(document).ready ->
-  fetch('/api/users')
+  fetch('/api/users?public=true')
     .then (res) -> res.json()
     .then (json) -> render(json)
 

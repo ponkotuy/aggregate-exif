@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 case class CreateUser(name: String, email: String, password: String) {
   def user(now: DateTime = DateTime.now()): User = {
     val encoded = BCryptEncoder(password)
-    User(0L, name, email, Role.NormalUser, encoded, now)
+    User(0L, name, email, Role.NormalUser, encoded, public = false, now)
   }
 }
 

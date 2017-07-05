@@ -5,48 +5,55 @@ $(document).ready ->
   if params.get('userId')
     render(params)
   else
-    fetch('/api/user', {credentials: 'include'})
-      .then (res) ->
-        if res.ok
-          res.json()
-            .then (json) ->
-              addParams({userId: json.id})
-        else
-          uri = encodeURIComponent(location.href)
-          location.href = "/auth/session.html?to=#{uri}"
+    @session.then (res) ->
+      if res.ok
+        res.json()
+          .then (json) ->
+            addParams({userId: json.id})
+      else
+        uri = encodeURIComponent(location.href)
+        location.href = "/auth/session.html?to=#{uri}"
 
 render = (params) ->
   id = params.get('userId')
-  fetch("/api/user/#{id}/focal?#{params.toString()}")
-    .then (res) -> res.json()
-    .then (json) ->
-      chart = renderFocalGraph(json)
-      clickFocal(chart)
-  fetch("/api/user/#{id}/iso?#{params.toString()}")
-    .then (res) -> res.json()
-    .then (json) ->
-      chart = renderISOGraph(json)
-      clickISO(chart)
-  fetch("/api/user/#{id}/fNumber?#{params.toString()}")
-    .then (res) -> res.json()
-    .then (json) ->
-      chart = renderFNumberGraph(json)
-      clickFNumber(chart)
-  fetch("/api/user/#{id}/exposure?#{params.toString()}")
-    .then (res) -> res.json()
-    .then (json) ->
-      chart = renderExposureGraph(json)
-      clickExposure(chart)
-  fetch("/api/user/#{id}/camera?#{params.toString()}")
-    .then (res) -> res.json()
-    .then (json) ->
-      chart = renderCameraGraph(json)
-      clickCamera(chart)
-  fetch("/api/user/#{id}/lens?#{params.toString()}")
-    .then (res) -> res.json()
-    .then (json) ->
-      chart = renderLensGraph(json)
-      clickLens(chart)
+  viewable(id).then (flag) ->
+    unless flag
+      return
+    fetch("/api/user/#{id}/focal?#{params.toString()}", {credentials: 'include'})
+      .then (res) -> res.json()
+      .then (json) ->
+        chart = renderFocalGraph(json)
+        clickFocal(chart)
+    fetch("/api/user/#{id}/iso?#{params.toString()}", {credentials: 'include'})
+      .then (res) -> res.json()
+      .then (json) ->
+        chart = renderISOGraph(json)
+        clickISO(chart)
+    fetch("/api/user/#{id}/fNumber?#{params.toString()}", {credentials: 'include'})
+      .then (res) -> res.json()
+      .then (json) ->
+        chart = renderFNumberGraph(json)
+        clickFNumber(chart)
+    fetch("/api/user/#{id}/exposure?#{params.toString()}", {credentials: 'include'})
+      .then (res) -> res.json()
+      .then (json) ->
+        chart = renderExposureGraph(json)
+        clickExposure(chart)
+    fetch("/api/user/#{id}/camera?#{params.toString()}", {credentials: 'include'})
+      .then (res) -> res.json()
+      .then (json) ->
+        chart = renderCameraGraph(json)
+        clickCamera(chart)
+    fetch("/api/user/#{id}/lens?#{params.toString()}", {credentials: 'include'})
+      .then (res) -> res.json()
+      .then (json) ->
+        chart = renderLensGraph(json)
+        clickLens(chart)
+
+viewable = (userId) ->
+  fetch("/api/user/#{userId}/viewable", {credentials: 'include'})
+    .then (res) -> res.text()
+    .then (text) -> text == 'true'
 
 renderFilters = (params) ->
   camera = if params.get('camera')
