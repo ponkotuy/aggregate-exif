@@ -9,7 +9,27 @@ html(lang=ja)
     .container(role=main)
       .jumbotron
         h1 CameraNamazu
-      h3 Public User
-      ul#users
-        li(v-for='user in users')
-          a(:href='"/user.html?userId=" + user.id', v-text='user.name')
+        p 写真のEXIF情報を集計・公開
+        a.btn.btn-primary(href='/auth/create_account.html') アカウント作成
+        a.btn.btn-primary(href='https://gitter.im/ponkotuy/aggregate-exif') 開発室(Gitter)
+      .row
+        .col-sm-3
+          h3 Public User
+          ul#users
+            li(v-for='user in users')
+              a(:href='"/user.html?userId=" + user.id', v-text='user.name')
+        .col-sm-9
+          h3 なにこれ
+          p 写真のjpegについているEXIFの情報から、カメラ・レンズ・焦点距離・F値・ISO感度・シャッター速度を取得し、集計するツールです。
+            | 統計は公開・非公開が選択できます。
+          h3 使い方
+          ul
+            li アカウント作成
+            li ログイン
+            li 写真アップロード
+            li グラフを公開する場合は右上のメニューから公開する
+          h3 アップロード方法
+          h4 Uploadタブから
+          p jpeg形式とzip形式のファイルをUploadできます。手軽にUploadできますが、ファイル全体をUploadするのでお勧めしません
+          h4 専用Uploaderから
+          p

@@ -3,12 +3,14 @@ scalaVersion := "2.11.11"
 
 name := "AggregateEXIF"
 
-lazy val library = (project in file("library"))
+lazy val library = project in file("library")
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala)
-  .dependsOn(library)
+    .enablePlugins(PlayScala)
+    .dependsOn(library)
 lazy val client = (project in file("client"))
-  .dependsOn(library)
+    .enablePlugins(JavaAppPackaging)
+    .dependsOn(library)
+    .settings(version := "0.1")
 
 resolvers += "Bintary JCenter" at "http://jcenter.bintray.com"
 
