@@ -5,7 +5,7 @@ $(document).ready ->
   if params.get('userId')
     render(params)
   else
-    @session.then (res) ->
+    session.then (res) ->
       if res.ok
         res.json()
           .then (json) ->
