@@ -5,8 +5,11 @@ $(document).ready ->
       email: ''
     methods:
       submit: ->
-        API.putJSON
-          url: '/api/password_reset'
-          data: {email: @email}
-          success: ->
+        option =
+          method: 'PUT'
+          headers:
+            'Content-Type': 'aplication/json'
+          body: JSON.stringify({email: @email})
+        fetch('/api/password_reset', option)
+          .then ->
             location.href = '/'

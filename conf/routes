@@ -15,6 +15,9 @@ PUT /api/user/private controllers.UserController.public(next: Boolean = false)
 PUT /api/user/public controllers.UserController.public(next: Boolean = true)
 POST /api/user controllers.UserController.createAccount()
 
+PUT /api/password_reset controllers.PasswordController.request()
+DELETE /api/password_reset controllers.PasswordController.reset()
+
 POST /api/image controllers.ImageController.upload()
 
 GET /api/camera/:id controllers.CameraController.get(id: Long)

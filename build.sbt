@@ -21,7 +21,8 @@ libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time" % "2.16.0",
   "jp.t2v" %% "play2-auth" % "0.14.2",
   "com.github.tototoshi" %% "play-json4s-native" % "0.7.0",
-   "org.json4s" %% "json4s-ext" % "3.5.2",
+  "org.json4s" %% "json4s-ext" % "3.5.2",
   "ch.qos.logback" % "logback-classic" % "1.1.7" % "runtime",
-  "org.slf4j" % "slf4j-api" % "1.7.21"
+  "org.slf4j" % "slf4j-api" % "1.7.21",
+  "com.amazonaws" % "aws-java-sdk" % "1.11.158"
 )

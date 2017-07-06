@@ -32,15 +32,18 @@ object User extends SkinnyCRUDMapperWithId[Long, User] {
   override def idToRawValue(id: Long): Any = id
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
-  def create(u: User)(implicit session: DBSession): Long =
-    createWithAttributes(
-      'name -> u.name,
-      'email -> u.email,
-      'role -> u.role.value,
-      'password -> u.password,
-      'public -> u.public,
-      'createdAt -> u.createdAt
-    )
+  def attributes(u: User) = Seq(
+    'name -> u.name,
+    'email -> u.email,
+    'role -> u.role.value,
+    'password -> u.password,
+    'public -> u.public,
+    'createdAt -> u.createdAt
+  )
+
+  def create(u: User)(implicit session: DBSession): Long = createWithAttributes(attributes(u):_*)
+
+  def update(u: User)(implicit session: DBSession): Int = updateById(u.id).withAttributes(attributes(u):_*)
 }
 
 case class UserMinimal(id: Long, name: String, public: Boolean, createdAt: DateTime)

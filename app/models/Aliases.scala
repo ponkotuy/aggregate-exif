@@ -6,4 +6,5 @@ object Aliases {
   def c = Camera.defaultAlias
   def i = Image.defaultAlias
   def cond = Condition.defaultAlias
+  def pr = PasswordReset.defaultAlias
 }
