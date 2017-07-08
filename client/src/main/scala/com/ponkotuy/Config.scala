@@ -21,7 +21,7 @@ class Config {
 object Config {
   val Initial =
     """
-      |server = "https://exif.ponkotuy.com"
+      |server = "https://namazu.ponkotuy.com"
       |email = ""
       |password = ""
       |""".stripMargin

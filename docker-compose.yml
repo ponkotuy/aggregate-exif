@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db:
+    image: postgres:9.6
+    volumes:
+      - /docker/exif/psql:/var/lib/postgresql/data
+    env_file: .env
+    ports:
+      - "5434:5432"
+  web:
+    image: ponkotuy/aggregateexif
+    env_file: .env_web
+    ports:
+      - "9049:9000"
+    depends_on:
+      - db

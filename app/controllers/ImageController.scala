@@ -7,7 +7,7 @@ import javax.inject.{Inject, Singleton}
 
 import authes.AuthConfigImpl
 import authes.Role.NormalUser
-import com.ponkotuy.queries.{Exif, ExifParseError}
+import com.ponkotuy.queries.Exif
 import com.ponkotuy.{Extractor, Metadata}
 import jp.t2v.lab.play2.auth.AuthElement
 import models.ExifSerializer

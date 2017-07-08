@@ -151,3 +151,7 @@ typings/
 
 # outputdir
 view/output
+
+# env
+.env
+.env_web

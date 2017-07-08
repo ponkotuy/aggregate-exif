@@ -28,3 +28,7 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.21",
   "com.amazonaws" % "aws-java-sdk" % "1.11.158"
 )
+
+// Docker
+dockerRepository := Some("ponkotuy")
+dockerUpdateLatest := true
