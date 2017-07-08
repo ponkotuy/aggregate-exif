@@ -37,6 +37,6 @@ html(lang=ja)
           h4 専用Uploaderから
           p
             a(href='/uploader.zip') Uploader
-            | をダウンロードして解凍し、以下のようにコマンドを実行する
+            | をダウンロードして解凍し、以下のようにコマンドを実行します
           code $ bin/aggregateexifclient <dir|file>
-          h4
+          p 初回起動時はユーザ設定がされてないのでエラーになります。なので、$HOME/.namazu/application.confに設定を追記します

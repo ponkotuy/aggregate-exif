@@ -8,7 +8,7 @@ case class Exif(
     cond: Exif.PhotoCond,
     dateTime: DateTime,
     camera: Exif.Camera,
-    lens: Exif.Lens)
+    lens: Option[Exif.Lens])
 
 object Exif {
   val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy:MM:dd HH:mm:ss")
@@ -17,7 +17,7 @@ object Exif {
     cond <- PhotoCond.fromMap(map)
     dateTime <- map.get("Date/Time").map { str => formatter.parseDateTime(str) }
     camera <- Camera.fromMap(map)
-    lens <- Lens.fromMap(map)
+    lens = Lens.fromMap(map)
   } yield Exif(fileName, cond, dateTime, camera, lens)
 
   case class Camera(maker: String, name: String)

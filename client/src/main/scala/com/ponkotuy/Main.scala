@@ -1,7 +1,7 @@
 package com.ponkotuy
 
 import java.nio.charset.{Charset, StandardCharsets}
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, Path, Paths}
 
 import com.ponkotuy.queries.{Exif, LoginEmail}
 import org.json4s.DefaultFormats
@@ -14,20 +14,20 @@ import scala.compat.java8.StreamConverters._
 object Main {
   implicit val formats = DefaultFormats ++ JodaTimeSerializers.all
 
-  val Host = "http://localhost:9000"
+  val config = new Config
 
   def main(args: Array[String]): Unit = {
     val extractor = new com.ponkotuy.Extractor
-    login("i@ponkotuy.com", "yamamot1").fold(println("Auth failed")){ session =>
+    login().fold(println("Auth failed")){ session =>
       args.foreach{ raw =>
-        val exifs = Files.list(Paths.get(raw)).toScala[List]
-            .filter(_.toString.endsWith(".JPG")).flatMap{ file =>
+        val exifs = files(raw).filter(_.toString.toLowerCase.endsWith(".jpg")).flatMap{ file =>
           val map = extractor.read(file).tagMaps
+          map.filterNot(_._1.startsWith("Unknown tag")).filter(_._1.startsWith("Lens")).foreach(println)
           Exif.fromMap(file.getFileName.toString, map)
         }
         exifs.foreach{ exif =>
           println(exif.fileName)
-          val req = Request(s"${Host}/api/exif")
+          val req = Request(s"${config.server}/api/exif")
               .header("Cookie", session.toString)
               .body(write(exif).getBytes(Charset.forName("UTF-8")), "application/json")
           val res = HTTP.post(req)
@@ -37,12 +37,17 @@ object Main {
     }
   }
 
-  def login(email: String, pass: String): Option[Cookie] = {
-    val auth = LoginEmail(email, pass)
+  private def login(): Option[Cookie] = {
+    val auth = LoginEmail(config.email, config.password)
     val json = write(auth).getBytes(StandardCharsets.UTF_8)
-    val req = Request(s"${Host}/api/session").body(json, "application/json")
+    val req = Request(s"${config.server}/api/session").body(json, "application/json")
     val res = HTTP.post(req)
-    println(res.rawCookies)
     res.header("Set-Cookie").map(Cookie.fromStr)
+  }
+
+  private def files(raw: String): List[Path] = {
+    val path = Paths.get(raw)
+    if(Files.isDirectory(path)) Files.list(path).toScala[List]
+    else path :: Nil
   }
 }

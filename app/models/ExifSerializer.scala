@@ -7,7 +7,7 @@ import scalikejdbc._
 class ExifSerializer(exif: Exif) {
   def save(userId: Long)(implicit session: DBSession): Option[Long] = {
     import ExifSerializer._
-    val lensId = searchLensId(exif.lens)
+    val lensId = exif.lens.map(searchLensId)
     val cameraId = searchCameraId(exif.camera)
     saveImage(exif)(userId, cameraId, lensId).map { imageId =>
       saveCond(exif.cond)(imageId)
@@ -28,7 +28,7 @@ object ExifSerializer {
         .fold(Camera.create(new Camera(0L, camera.maker, camera.name)))(_.id)
   }
 
-  private def saveImage(exif: Exif)(userId: Long, cameraId: Long, lensId: Long)(implicit session: DBSession): Option[Long] = {
+  private def saveImage(exif: Exif)(userId: Long, cameraId: Long, lensId: Option[Long])(implicit session: DBSession): Option[Long] = {
     import Aliases.i
     val exists = Image.findBy(sqls.eq(i.userId, userId).and.eq(i.fileName, exif.fileName)).isDefined
     println(exists)

@@ -9,7 +9,7 @@ case class Image(
     userId: Long,
     fileName: String,
     cameraId: Long,
-    lensId: Long,
+    lensId: Option[Long],
     dateTime: DateTime,
     createdAt: DateTime,
     camera: Option[Camera] = None,
