@@ -74,9 +74,9 @@ class GraphController @Inject()(json4s: Json4s, _ec: ExecutionContext) extends C
     auth(userId).map{ enabled =>
       if(enabled) {
         val where = sqls.eq(i.userId, userId).and(GraphFilter.fromReq(req).where)
-        val counts = Image.groupByCount(where, i.lensId)(AutoSession, implicitly[TypeBinder[Long]])
+        val counts = Image.groupByCount(where, i.lensId)(AutoSession, implicitly[TypeBinder[Option[Long]]])
         val lens: Map[Long, String] = Lens.findAll().map{ l => l.id -> l.name }(breakOut)
-        val result = counts.map{ case (id, count) => LensElement(id, lens(id), count) }
+        val result = counts.flatMap{ case (id, count) => id.map { i => LensElement(i, lens(i), count) } }
         Ok(Extraction.decompose(result))
       } else Forbidden
     }
@@ -94,7 +94,7 @@ class GraphController @Inject()(json4s: Json4s, _ec: ExecutionContext) extends C
     }
   }
 
-  def auth(userId: Long)(implicit req: RequestHeader, ec: ExecutionContext): Future[Boolean] = {
+  private def auth(userId: Long)(implicit req: RequestHeader, ec: ExecutionContext): Future[Boolean] = {
     User.findById(userId).fold(Future.successful(false)) { user =>
       if(user.public) Future.successful(true)
       else {
