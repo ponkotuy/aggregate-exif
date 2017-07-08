@@ -7,7 +7,7 @@ import javax.inject.{Inject, Singleton}
 
 import authes.AuthConfigImpl
 import authes.Role.NormalUser
-import com.ponkotuy.queries.Exif
+import com.ponkotuy.queries.{Exif, ExifParseError}
 import com.ponkotuy.{Extractor, Metadata}
 import jp.t2v.lab.play2.auth.AuthElement
 import models.ExifSerializer
@@ -33,11 +33,11 @@ class ImageController @Inject()(_ec: ExecutionContext) extends Controller with A
       Future {
         parseFile(file).foreach{ content =>
           val map = content.metadata(extractor).tagMaps
-          Exif.fromMap(content.fileName, map).foreach { exif =>
+          Exif.fromMap(content.fileName, map).fold[Unit]({ error => Logger.warn(s"ParseError: ${error} not found.") }, { exif =>
             DB localTx { implicit session =>
               if(new ExifSerializer(exif).save(loggedIn.id).exists(0 < _)) Logger.info(s"Insert ${exif.fileName}")
             }
-          }
+          })
         }
       }
       SeeOther("/")

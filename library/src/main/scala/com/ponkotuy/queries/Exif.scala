@@ -2,6 +2,7 @@ package com.ponkotuy.queries
 
 import com.github.nscala_time.time.Imports._
 import org.joda.time.format.DateTimeFormatter
+import com.ponkotuy.utils.EitherUtil.eitherToRightProjection
 
 case class Exif(
     fileName: String,
@@ -13,10 +14,10 @@ case class Exif(
 object Exif {
   val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy:MM:dd HH:mm:ss")
 
-  def fromMap(fileName: String, map: Map[String, String]): Option[Exif] = for {
+  def fromMap(fileName: String, map: Map[String, String]): Either[ExifParseError, Exif] = for {
     cond <- PhotoCond.fromMap(map)
-    dateTime <- map.get("Date/Time").map { str => formatter.parseDateTime(str) }
-    camera <- Camera.fromMap(map)
+    dateTime <- map.get("Date/Time").map { str => formatter.parseDateTime(str) }.toRight(ExifParseError.DateTime)
+    camera <- Camera.fromMap(map).toRight(ExifParseError.Camera)
     lens = Lens.fromMap(map)
   } yield Exif(fileName, cond, dateTime, camera, lens)
 
@@ -40,12 +41,13 @@ object Exif {
   case class PhotoCond(iso: Int, focal: Int, focal35: Int, fNumber: Double, exposure: Int)
 
   object PhotoCond {
-    def fromMap(map: Map[String, String]): Option[PhotoCond] = for {
-      iso <- map.get("ISO Speed Ratings").map(_.toInt)
-      focal <- map.get("Focal Length").map(extractNumber)
-      focal35 <- map.get("Focal Length 35").map(extractNumber)
-      fNumber <- map.get("F-Number").map(extractDouble)
-      exposure <- map.get("Exposure Time").map(extractExposure)
+    import ExifParseError.Cond._
+    def fromMap(map: Map[String, String]): Either[ExifParseError.Cond, PhotoCond] = for {
+      iso <- map.get("ISO Speed Ratings").map(_.toInt).toRight(ISO)
+      focal <- map.get("Focal Length").map(extractNumber).toRight(Focal)
+      focal35 = map.get("Focal Length 35").map(extractNumber).getOrElse(focal)
+      fNumber <- map.get("F-Number").map(extractDouble).toRight(FNumber)
+      exposure <- map.get("Exposure Time").map(extractExposure).toRight(Exposure)
     } yield PhotoCond(iso, focal, focal35, fNumber, exposure)
 
     private def extractNumber(str: String): Int =
@@ -60,4 +62,19 @@ object Exif {
       else extractNumber(str.dropWhile(_ == '/').tail)
     }
   }
+}
+
+sealed abstract class ExifParseError
+
+object ExifParseError {
+  sealed abstract class Cond extends ExifParseError
+  object Cond {
+    case object ISO extends Cond
+    case object Focal extends Cond
+    case object FNumber extends Cond
+    case object Exposure extends Cond
+  }
+
+  case object DateTime extends Cond
+  case object Camera extends Cond
 }

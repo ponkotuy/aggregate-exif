@@ -8,6 +8,7 @@ import org.json4s.DefaultFormats
 import org.json4s.ext.JodaTimeSerializers
 import org.json4s.native.Serialization.write
 import skinny.http.{HTTP, Request}
+import com.ponkotuy.utils.EitherUtil.eitherToRightProjection
 
 import scala.compat.java8.StreamConverters._
 
@@ -23,7 +24,9 @@ object Main {
         val exifs = files(raw).filter(_.toString.toLowerCase.endsWith(".jpg")).flatMap{ file =>
           val map = extractor.read(file).tagMaps
           map.filterNot(_._1.startsWith("Unknown tag")).filter(_._1.startsWith("Lens")).foreach(println)
-          Exif.fromMap(file.getFileName.toString, map)
+          Exif.fromMap(file.getFileName.toString, map).left.map { e =>
+            println(s"${file.toString} parse error: ${e} not found.")
+          }.toOption
         }
         exifs.foreach{ exif =>
           println(exif.fileName)
