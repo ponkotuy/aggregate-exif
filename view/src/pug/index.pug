@@ -10,7 +10,7 @@ html(lang=ja)
       .jumbotron
         h1 CameraNamazu
         p 写真のEXIF情報を集計・公開
-        a.btn.btn-primary(href='/auth/create_account.html') アカウント作成
+        a.btn.btn-primary(href='/auth/account.html') アカウント作成
         a.btn.btn-primary(href='/uploader.zip') Uploader
         a.btn.btn-primary(href='https://gitter.im/ponkotuy/aggregate-exif') 開発室(Gitter)
       .row
@@ -38,5 +38,5 @@ html(lang=ja)
           p
             a(href='/uploader.zip') Uploader
             | をダウンロードして解凍し、以下のようにコマンドを実行します
-          code $ bin/aggregateexifclient <dir|file>
+          code $ bin/aggregateexifclient &lt;dir|file&gt;
           p 初回起動時はユーザ設定がされてないのでエラーになります。なので、$HOME/.namazu/application.confに設定を追記します

@@ -23,7 +23,6 @@ object Main {
       args.foreach{ raw =>
         val exifs = files(raw).filter(_.toString.toLowerCase.endsWith(".jpg")).flatMap{ file =>
           val map = extractor.read(file).tagMaps
-          map.filterNot(_._1.startsWith("Unknown tag")).filter(_._1.startsWith("Lens")).foreach(println)
           Exif.fromMap(file.getFileName.toString, map).left.map { e =>
             println(s"${file.toString} parse error: ${e} not found.")
           }.toOption
