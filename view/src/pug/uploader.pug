@@ -4,6 +4,7 @@ html(lang=ja)
     include template/_header
     title CameraNamazu Uploader
     script(src='/js/uploader.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.2.1/exif.min.js')
   body
     include template/_navbar
     .container(role=main)
@@ -12,3 +13,4 @@ html(lang=ja)
           label(for='inputFile') File Input
           input#inputFile.form-control(type='file', name='file', readonly='', multiple='multiple', placeholder='Browse...')
         button.btn.btn-primary(type='submit') Submit
+        button#exif.btn.btn-primary(type='button') EXIF
