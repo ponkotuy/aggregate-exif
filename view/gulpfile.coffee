@@ -20,10 +20,16 @@ gulp.task 'copy', ->
     .pipe plumber()
     .pipe gulp.dest('./output/lib/bootstrap-material-design/')
 
-gulp.task 'compile', ['pug', 'coffee', 'copy']
+gulp.task 'copyjs', ->
+  gulp.src './lib/js/**/*.js'
+    .pipe plumber()
+    .pipe gulp.dest('./output/lib/')
+
+gulp.task 'compile', ['pug', 'coffee', 'copy', 'copyjs']
 
 gulp.task 'watch', ['compile'], ->
   gulp.watch('./src/pug/**/*.pug', ['pug'])
   gulp.watch('./src/coffee/**/*.coffee', ['coffee'])
+  gulp.watch('./src/js/**/*.js', ['copyjs'])
 
 gulp.task 'default', ['watch']

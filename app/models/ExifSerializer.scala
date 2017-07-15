@@ -31,7 +31,6 @@ object ExifSerializer {
   private def saveImage(exif: Exif)(userId: Long, cameraId: Long, lensId: Option[Long])(implicit session: DBSession): Option[Long] = {
     import Aliases.i
     val exists = Image.findBy(sqls.eq(i.userId, userId).and.eq(i.fileName, exif.fileName)).isDefined
-    println(exists)
     if(exists) None
     else {
       val image = new Image(0L, userId, exif.fileName, cameraId, lensId, exif.dateTime, DateTime.now())

@@ -23,7 +23,6 @@ class ExifController @Inject()(json4s: Json4s) extends Controller with AuthEleme
 
   def upload() = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
     req.body.extractOpt[Exif].fold(JsonParseError){ exif =>
-      println(exif)
       DB localTx { implicit session =>
         if(new ExifSerializer(exif).save(loggedIn.id).exists(0 < _)) {
           Logger.info(s"Insert ${exif.fileName}")
