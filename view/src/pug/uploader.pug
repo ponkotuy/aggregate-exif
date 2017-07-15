@@ -3,12 +3,18 @@ html(lang=ja)
   head
     include template/_header
     title CameraNamazu Uploader
+    script(src='/lib/minify_jpeg.js')
     script(src='/js/uploader.js')
   body
     include template/_navbar
     .container(role=main)
-      form#uploader(action='/api/image', method='POST', enctype='multipart/form-data')
+      form#uploader
         .input-group
-          label(for='inputFile') File Input
-          input#inputFile.form-control(type='file', name='file', readonly='', multiple='multiple', placeholder='Browse...')
-        button.btn.btn-primary(type='submit') Submit
+          label(for='inputFiles') File Input
+          input#inputFiles.form-control(type='file', name='file', readonly='', multiple='multiple', placeholder='Browse...')
+        button#exif.btn.btn-primary(type='button') Submit
+      #results
+        div(v-for='result in results')
+          span.glyphicon.glyphicon-ok.text-success(v-if='result.success')
+          span.glyphicon.glyphicon-remove.text-danger(v-else)
+          span {{result.name}}: {{result.text}}

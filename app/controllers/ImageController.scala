@@ -7,18 +7,18 @@ import javax.inject.{Inject, Singleton}
 
 import authes.AuthConfigImpl
 import authes.Role.NormalUser
-import com.ponkotuy.queries.Exif
+import com.ponkotuy.queries.{Exif, ExifParseError}
 import com.ponkotuy.{Extractor, Metadata}
 import jp.t2v.lab.play2.auth.AuthElement
 import models.ExifSerializer
 import play.api.Logger
 import play.api.libs.Files.TemporaryFile
-import play.api.mvc.Controller
 import play.api.mvc.MultipartFormData.FilePart
+import play.api.mvc.{Controller, Result}
 import scalikejdbc.DB
 
 import scala.collection.JavaConverters._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ImageController @Inject()(_ec: ExecutionContext) extends Controller with AuthElement with AuthConfigImpl {
@@ -30,34 +30,33 @@ class ImageController @Inject()(_ec: ExecutionContext) extends Controller with A
   val extractor = new Extractor
   def upload = StackAction(parse.multipartFormData, AuthorityKey -> NormalUser) { implicit req =>
     req.body.file("file").fold(notFound("file element")){ file =>
-      Future {
-        parseFile(file).foreach{ content =>
-          val map = content.metadata(extractor).tagMaps
-          Exif.fromMap(content.fileName, map).fold[Unit]({ error => Logger.warn(s"ParseError: ${error} not found.") }, { exif =>
-            DB localTx { implicit session =>
-              if(new ExifSerializer(exif).save(loggedIn.id).exists(0 < _)) Logger.info(s"Insert ${exif.fileName}")
-            }
-          })
-        }
-      }
-      SeeOther("/")
+      parseFile(file).right.map{ content =>
+        val map = content.metadata(extractor).tagMaps
+        Exif.fromMap(content.fileName, map).fold[Result](parseError, { exif =>
+          DB localTx { implicit session =>
+            if(new ExifSerializer(exif).save(loggedIn.id).exists(0 < _)) {
+              Logger.info(s"Insert ${exif.fileName}")
+              Success
+            } else BadRequest("Duplicate files(not insert)")
+          }
+        })
+      }.merge
     }
   }
 }
 
 object ImageController {
   import FileExtension._
-  def parseFile(file: FilePart[TemporaryFile]): TraversableOnce[Content] = {
-    val res = for {
-      extRaw <- extractExt(file.filename)
-      ext <- FileExtension.find(extRaw)
+  import Responses._
+  import utils.EitherUtil._
+
+  def parseFile(file: FilePart[TemporaryFile]): Either[Result, Content] = {
+    for {
+      extRaw <- extractExt(file.filename).toRight(notFound("extension from file name"))
+      _ <- FileExtension.find(extRaw).filter(_ == JPEG).toRight(BadRequest("Unsupported file"))
     } yield {
-      ext match {
-        case JPEG => FileContent(file.filename, file.ref.file) :: Nil
-        case ZIP => decodeZipToJpegs(file.ref.file)
-      }
+      FileContent(file.filename, file.ref.file)
     }
-    res.getOrElse(Nil)
   }
 
   def decodeZipToJpegs(file: File): Iterator[ZipContent] = {
@@ -68,6 +67,12 @@ object ImageController {
 
   private def extractExt(fileName: String): Option[String] =
     fileName.toLowerCase(Locale.ENGLISH).split('.').lastOption
+
+  private def parseError(error: ExifParseError): Result = {
+    val mes = s"ParseError: ${error} not found."
+    Logger.warn(mes)
+    BadRequest(mes)
+  }
 }
 
 sealed abstract class FileExtension {
