@@ -13,6 +13,26 @@ $(document).ready ->
       else
         uri = encodeURIComponent(location.href)
         location.href = "/auth/session.html?to=#{uri}"
+  renderPeriod(params)
+
+renderPeriod = (params) ->
+  new Vue
+    el: '#period'
+    data:
+      start: params.get('start') || ''
+      end: params.get('end') || ''
+    methods:
+      set: ->
+        console.log(@start, @end)
+        params = {start: @start || undefined, end: @end || undefined}
+        addParams(params)
+    mounted: ->
+      $('.datetimepicker').datetimepicker({format: "YYYY-MM-DDTHH:mm"})
+        .on 'dp.change', (e) =>
+          if e.target.id == 'start'
+            @start = e.target.value
+          if e.target.id == 'end'
+            @end = e.target.value
 
 render = (params) ->
   id = params.get('userId')
@@ -306,7 +326,8 @@ xScaleLabel = (label) ->
 addParams = (params) ->
   p = new URLSearchParams(location.search.slice(1))
   for k, v of params
-    if p.has(k)
-      p.delete(k)
-    p.append(k, v)
+    if v
+      if p.has(k)
+        p.delete(k)
+      p.append(k, v)
   location.search = p.toString()

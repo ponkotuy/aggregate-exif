@@ -33,7 +33,7 @@ case class GraphFilter(
 }
 
 object GraphFilter {
-  val format = ISODateTimeFormat.dateTimeNoMillis()
+  val format = ISODateTimeFormat.dateHourMinute()
   def fromReq(req: RequestHeader): GraphFilter = {
     GraphFilter(
       req.getQueryString("focal").flatMap(Range.fromString(_.toInt)),

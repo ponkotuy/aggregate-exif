@@ -3,8 +3,11 @@ html(lang=ja)
   head
     include template/_header
     title CameraNamazu Graph
-    script(src='/js/user.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js')
+    script(src='/js/user.js')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker-standalone.min.css')
   body
     include template/_navbar
     .container(role=main)
@@ -15,6 +18,16 @@ html(lang=ja)
           span
             strong(v-text='key + ":"')
             span(v-text='value')
+      form#period.form-horizontal
+        .form-group
+          label.col-sm-2.control-label 集計期間
+          .col-sm-3
+            input.form-control.datetimepicker#start(type='text', v-model='start')
+          label.col-sm-1.control-label 〜
+          .col-sm-3
+            input.form-control.datetimepicker#end(type='text', v-model='end')
+          .col-sm-2
+            button.btn.btn-default(type='button' @click='set()') Set
       canvas#focalChart
       canvas#isoChart
       canvas#fNumberChart
