@@ -27,7 +27,13 @@ html(lang=ja)
           .col-sm-3
             input.form-control.datetimepicker#end(type='text', v-model='end')
           .col-sm-2
-            button.btn.btn-default(type='button' @click='set()') Set
+            button.btn.btn-default(type='button', @click='set()') Set
+        .form-group
+          button.btn.btn-default(type='button', @click='days(1)') 1 day
+          button.btn.btn-default(type='button', @click='days(7)') 1 week
+          button.btn.btn-default(type='button', @click='days(30)') 1 month
+          button.btn.btn-default(type='button', @click='days(365)') 1 year
+          button.btn.btn-warning(type='button', @click='clear()') Clear
       canvas#focalChart
       canvas#isoChart
       canvas#fNumberChart

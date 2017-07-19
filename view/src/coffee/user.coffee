@@ -15,6 +15,7 @@ $(document).ready ->
         location.href = "/auth/session.html?to=#{uri}"
   renderPeriod(params)
 
+FORMAT = 'YYYY-MM-DDTHH:mm'
 renderPeriod = (params) ->
   new Vue
     el: '#period'
@@ -23,11 +24,19 @@ renderPeriod = (params) ->
       end: params.get('end') || ''
     methods:
       set: ->
-        console.log(@start, @end)
         params = {start: @start || undefined, end: @end || undefined}
         addParams(params)
+      days: (n) ->
+        @start = moment().subtract('days', n).format(FORMAT)
+        @set()
+      clear: ->
+        @start = ''
+        @end = ''
+        params.delete('start')
+        params.delete('end')
+        location.search = params.toString()
     mounted: ->
-      $('.datetimepicker').datetimepicker({format: "YYYY-MM-DDTHH:mm"})
+      $('.datetimepicker').datetimepicker({format: FORMAT})
         .on 'dp.change', (e) =>
           if e.target.id == 'start'
             @start = e.target.value
@@ -331,3 +340,4 @@ addParams = (params) ->
         p.delete(k)
       p.append(k, v)
   location.search = p.toString()
+
