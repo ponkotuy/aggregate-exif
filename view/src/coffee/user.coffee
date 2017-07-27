@@ -176,7 +176,7 @@ clickISO = (chart) ->
     isoMax = iso * 2
     addParams({iso: "#{iso}_#{isoMax}"})
 
-fNumberGroup = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30]
+fNumberGroup = [0.7, 0.8, 1.0, 1.2, 1.4, 1.7, 2.0, 2.4, 2.8, 3.3, 4, 4.8, 5.6, 6.7, 8.0, 9.5, 11, 13, 16, 19, 22, 27, 32, 38]
 renderFNumberGraph = (elems) ->
   ctx = getCtx('fNumberChart')
   _elems = _.chain(fNumberGroup).zip(_.tail(fNumberGroup))
