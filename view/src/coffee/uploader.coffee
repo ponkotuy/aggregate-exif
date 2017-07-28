@@ -1,6 +1,7 @@
 $(document).ready ->
   document.getElementById('uploadTab').className = 'active'
   mustSession()
+  renderImages()
   results = renderResults()
   uploader = document.getElementById('inputFiles')
   document.getElementById('exif').onclick = ->
@@ -35,3 +36,18 @@ renderResults = ->
     methods:
       push: (r) ->
         @results.push(r)
+
+renderImages = ->
+  new Vue
+    el: '#images'
+    data:
+      page: 0
+      images: images
+    methods:
+      getImages: (page) ->
+        fetch("/api/images?page=#{page}", {credentials: 'include'})
+          .then (res) -> res.json()
+          .then (json) =>
+            @images = json
+    mounted: ->
+      @getImages(0)

@@ -18,6 +18,8 @@ POST /api/user controllers.UserController.createAccount()
 PUT /api/password_reset controllers.PasswordController.request()
 DELETE /api/password_reset controllers.PasswordController.reset()
 
+GET /api/images controllers.ImageController.list(page: Int ?= 0)
+GET /api/images/count controllers.ImageController.count()
 POST /api/image controllers.ImageController.upload()
 
 GET /api/camera/:id controllers.CameraController.get(id: Long)

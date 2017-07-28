@@ -18,3 +18,16 @@ html(lang=ja)
           span.glyphicon.glyphicon-ok.text-success(v-if='result.success')
           span.glyphicon.glyphicon-remove.text-danger(v-else)
           span {{result.name}}: {{result.text}}
+      h3 Uploaded images
+      #images
+        table.table.table-striped
+          thead
+            tr
+              th Name
+              th Shooting time
+              th Uploading time
+          tbody
+            tr(v-for='img in images')
+              td(v-text='img.fileName')
+              td(v-text='img.dateTime')
+              td(v-text='img.createdAt')
