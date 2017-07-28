@@ -1,20 +1,21 @@
 package controllers
 
-import java.io.{File, InputStream}
+import java.io.File
 import java.util.Locale
 import java.util.zip.ZipFile
 import javax.inject.{Inject, Singleton}
 
 import authes.AuthConfigImpl
 import authes.Role.NormalUser
+import com.ponkotuy.Extractor
 import com.ponkotuy.queries.{Exif, ExifParseError}
-import com.ponkotuy.{Extractor, Metadata}
 import jp.t2v.lab.play2.auth.AuthElement
 import models.ExifSerializer
 import play.api.Logger
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.MultipartFormData.FilePart
 import play.api.mvc.{Controller, Result}
+import requests.{Content, FileContent, FileExtension, ZipContent}
 import scalikejdbc.DB
 
 import scala.collection.JavaConverters._
@@ -73,35 +74,4 @@ object ImageController {
     Logger.warn(mes)
     BadRequest(mes)
   }
-}
-
-sealed abstract class FileExtension {
-  def isMine(ext: String): Boolean
-}
-
-object FileExtension {
-  case object JPEG extends FileExtension {
-    override def isMine(ext: String): Boolean = Seq("jpg", "jpeg", "jpe").contains(ext)
-  }
-
-  case object ZIP extends FileExtension {
-    override def isMine(ext: String): Boolean = Seq("zip", "jar").contains(ext)
-  }
-
-  val values = Seq(JPEG, ZIP)
-
-  def find(ext: String) = values.find(_.isMine(ext))
-}
-
-trait Content {
-  def fileName: String
-  def metadata(extractor: Extractor): Metadata
-}
-
-case class ZipContent(fileName: String, is: InputStream) extends Content {
-  override def metadata(extractor: Extractor): Metadata = extractor.read(is)
-}
-
-case class FileContent(fileName: String, file: File) extends Content {
-  override def metadata(extractor: Extractor): Metadata = extractor.read(file)
 }
