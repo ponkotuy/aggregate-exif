@@ -1,4 +1,4 @@
-package requests
+package queries
 
 import java.io.{File, InputStream}
 

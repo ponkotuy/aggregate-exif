@@ -1,7 +1,6 @@
 $(document).ready ->
   document.getElementById('uploadTab').className = 'active'
   mustSession()
-  renderImages()
   results = renderResults()
   uploader = document.getElementById('inputFiles')
   document.getElementById('exif').onclick = ->
@@ -10,6 +9,9 @@ $(document).ready ->
         send(form).then (res) ->
           res.text().then (text) ->
             results.push {success: res.ok, text: text, name: file_.name}
+  fetch('/api/images/count', {credentials: 'include'})
+    .then (res) -> res.json()
+    .then (json) -> renderImages(json)
 
 imageMinimize = (file, f) ->
   reader = new FileReader()
@@ -37,17 +39,21 @@ renderResults = ->
       push: (r) ->
         @results.push(r)
 
-renderImages = ->
+renderImages = (pageCount) ->
   new Vue
     el: '#images'
     data:
       page: 0
-      images: images
+      images: []
+      pageCount: Math.min(pageCount.page, 10)
     methods:
       getImages: (page) ->
         fetch("/api/images?page=#{page}", {credentials: 'include'})
           .then (res) -> res.json()
           .then (json) =>
             @images = json
+      nextPage: (page) ->
+        @page = Math.max(0, Math.min(@pageCount - 1, page))
+        @getImages(@page)
     mounted: ->
       @getImages(0)

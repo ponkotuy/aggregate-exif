@@ -8,6 +8,7 @@ html(lang=ja)
   body
     include template/_navbar
     .container(role=main)
+      h3 Update Images
       form#uploader
         .input-group
           label(for='inputFiles') File Input
@@ -20,6 +21,14 @@ html(lang=ja)
           span {{result.name}}: {{result.text}}
       h3 Uploaded images
       #images
+        nav(aria-label='Page navigation')
+          ul.pagination
+            li(:class='{disabled: page < 1}')
+              a(href='#', aria-label='Previous', @click='nextPage(page - 1)') &laquo;
+            li(v-for='p in _.range(0, pageCount)', :class='{active: page == p}')
+              a(href='#', v-text='p + 1', @click='nextPage(p)')
+            li(:class='{disabled: (pageCount - 1) <= page}')
+              a(href='#', aria-label='Next', @click='nextPage(page + 1)') &raquo;
         table.table.table-striped
           thead
             tr

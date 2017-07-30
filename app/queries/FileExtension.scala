@@ -1,4 +1,4 @@
-package requests
+package queries
 
 sealed abstract class FileExtension {
   def isMine(ext: String): Boolean

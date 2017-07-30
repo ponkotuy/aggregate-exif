@@ -17,8 +17,8 @@ import org.json4s.{DefaultFormats, Extraction}
 import play.api.Logger
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.MultipartFormData.FilePart
-import play.api.mvc.{Controller, Result}
-import requests.{Content, FileContent, FileExtension, ZipContent}
+import play.api.mvc.{Action, AnyContent, Controller, Result}
+import queries._
 import scalikejdbc._
 
 import scala.collection.JavaConverters._
@@ -37,23 +37,27 @@ class ImageController @Inject()(_ec: ExecutionContext, json4s: Json4s) extends C
   val ParPage = 100
   def list(page: Int) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     import models.Aliases.i
-    val images = if(page < 10)
-      Image.findAllByWithLimitOffset(
-        sqls.eq(i.userId, loggedIn.id),
-        limit = ParPage,
-        offset = page * ParPage,
-        orderings = i.id.desc :: Nil)
-    else Nil
-    Ok(Extraction.decompose(images))
+    if(page < 0) BadRequest("Page is negative")
+    else {
+      val images = if(page < 10)
+        Image.findAllByWithLimitOffset(
+          sqls.eq(i.userId, loggedIn.id),
+          limit = ParPage,
+          offset = page * ParPage,
+          orderings = i.id.desc :: Nil)
+      else Nil
+      Ok(Extraction.decompose(images))
+    }
   }
 
   def count() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     import models.Aliases.i
     val count = Image.countBy(sqls.eq(i.userId, loggedIn.id))
-    Ok(count.toString)
+    val page = PageCount(((count + ParPage - 1) / ParPage).toInt, count)
+    Ok(Extraction.decompose(page))
   }
 
-  def upload = StackAction(parse.multipartFormData, AuthorityKey -> NormalUser) { implicit req =>
+  def upload() = StackAction(parse.multipartFormData, AuthorityKey -> NormalUser) { implicit req =>
     req.body.file("file").fold(notFound("file element")){ file =>
       parseFile(file).right.map{ content =>
         val map = content.metadata(extractor).tagMaps
@@ -99,3 +103,5 @@ object ImageController {
     BadRequest(mes)
   }
 }
+
+case class PageCount(page: Int, count: Long)
