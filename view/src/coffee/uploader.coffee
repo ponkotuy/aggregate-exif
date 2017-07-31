@@ -46,6 +46,8 @@ renderImages = (pageCount) ->
       page: 0
       images: []
       pageCount: Math.min(pageCount.page, 10)
+      allChecked: false
+      checked: []
     methods:
       getImages: (page) ->
         fetch("/api/images?page=#{page}", {credentials: 'include'})
@@ -55,5 +57,15 @@ renderImages = (pageCount) ->
       nextPage: (page) ->
         @page = Math.max(0, Math.min(@pageCount - 1, page))
         @getImages(@page)
+      deletes: ->
+        json = JSON.stringify(@checked)
+        fetch('/api/images', {body: json, method: 'DELETE', headers: {'Content-Type': 'application/json'}, credentials: 'include'})
+          .then -> location.reload(false)
     mounted: ->
       @getImages(0)
+    watch:
+      'allChecked': (v) ->
+        if v
+          @checked = @images.map (img) -> img.id
+        else
+          @checked = []

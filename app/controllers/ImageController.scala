@@ -72,6 +72,13 @@ class ImageController @Inject()(_ec: ExecutionContext, json4s: Json4s) extends C
       }.merge
     }
   }
+
+  def delete() = StackAction(json4s.json, AuthorityKey -> NormalUser) { implicit req =>
+    req.body.extractOpt[Seq[Long]].fold(JsonParseError) { xs =>
+      Image.deleteBy(sqls.in(Image.column.id, xs).and.eq(Image.column.userId, loggedIn.id))
+      Success
+    }
+  }
 }
 
 object ImageController {

@@ -5,6 +5,10 @@ html(lang=ja)
     title CameraNamazu Uploader
     script(src='/lib/minify_jpeg.js')
     script(src='/js/uploader.js')
+    style.
+      tr input[type="checkbox"] {
+        margin: 0 0 0;
+      }
   body
     include template/_navbar
     .container(role=main)
@@ -32,11 +36,19 @@ html(lang=ja)
         table.table.table-striped
           thead
             tr
+              th
+                span.checkbox-material
+                  input(type='checkbox', v-model='allChecked')
               th Name
               th Shooting time
               th Uploading time
           tbody
             tr(v-for='img in images')
+              td
+                span.checkbox-material
+                  input(type='checkbox', :value='img.id', v-model='checked')
               td(v-text='img.fileName')
               td(v-text='img.dateTime')
               td(v-text='img.createdAt')
+
+        button.btn.btn-danger(type='button', @click='deletes()') Delete
