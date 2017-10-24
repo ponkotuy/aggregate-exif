@@ -30,6 +30,10 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.11.158"
 )
 
+javaOptions in Universal ++= Seq(
+  "-Dpidfile.path=/dev/null"
+)
+
 // Docker
 dockerRepository := Some("ponkotuy")
 dockerUpdateLatest := true
