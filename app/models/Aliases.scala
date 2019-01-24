@@ -7,4 +7,5 @@ object Aliases {
   def i = Image.defaultAlias
   def cond = Condition.defaultAlias
   def pr = PasswordReset.defaultAlias
+  def s = Session.defaultAlias
 }

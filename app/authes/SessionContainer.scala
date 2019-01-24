@@ -2,7 +2,6 @@ package authes
 
 import java.security.SecureRandom
 
-import jp.t2v.lab.play2.auth.{AuthenticityToken, IdContainer}
 import models.Session
 import scalikejdbc._
 import com.github.nscala_time.time.Imports._
@@ -10,25 +9,27 @@ import com.github.nscala_time.time.Imports._
 import scala.annotation.tailrec
 import scala.util.Random
 
-class SessionContainer extends IdContainer[Long] {
+class SessionContainer {
   import SessionContainer._
+
+  type AuthenticityToken = String
 
   val random = new Random(new SecureRandom())
 
-  override def startNewSession(userId: Long, timeoutInSeconds: Int): AuthenticityToken = {
+  def startNewSession(userId: Long, timeoutInSeconds: Int): AuthenticityToken = {
     val now = DateTime.now()
     val token = generate
     Session(0L, userId, token, now, now + timeoutInSeconds.seconds).save()(AutoSession)
     token
   }
 
-  override def remove(token: AuthenticityToken): Unit =
+  def remove(token: AuthenticityToken): Unit =
     Session.deleteBy(sqls.eq(Session.column.token, token))
 
-  override def get(token: AuthenticityToken): Option[Long] =
+  def get(token: AuthenticityToken): Option[Long] =
     Session.findByToken(token).map(_.userId)
 
-  override def prolongTimeout(token: AuthenticityToken, timeoutInSeconds: Int): Unit =
+  def prolongTimeout(token: AuthenticityToken, timeoutInSeconds: Int): Unit =
     Session.findByToken(token).map { s =>
       s.copy(expire = DateTime.now() + timeoutInSeconds.seconds).save()
     }

@@ -1,8 +1,11 @@
 package authes
 
+import models.User
 import scalikejdbc.TypeBinder
 
-sealed abstract class Role(val value: Int)
+sealed abstract class Role(val value: Int) {
+  def checkAuthority(user: User): Boolean = value <= user.role.value
+}
 
 object Role {
   case object Disabled extends Role(-1)
@@ -14,4 +17,5 @@ object Role {
 
   implicit def typeBinder: TypeBinder[Int] = TypeBinder.int
   implicit val impl: TypeBinder[Role] = TypeBinder(_ getInt _)(_ getInt _).map { i => find(i).getOrElse(NormalUser) }
+
 }

@@ -1,7 +1,7 @@
 
 name := "AggregateEXIFClient"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-java8-compat" % "0.8.0",

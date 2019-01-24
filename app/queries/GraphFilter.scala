@@ -2,6 +2,7 @@ package queries
 
 import com.github.nscala_time.time.Imports._
 import org.joda.time.format.ISODateTimeFormat
+import scalikejdbc.jodatime.JodaParameterBinderFactory._
 import play.api.mvc.RequestHeader
 import scalikejdbc._
 
@@ -17,7 +18,7 @@ case class GraphFilter(
     start: Option[DateTime],
     end: Option[DateTime]
 ) {
-  def where:Option[SQLSyntax] = {
+  def where: Option[SQLSyntax] = {
     import models.Aliases.{cond, i}
     sqls.toAndConditionOpt(
       focal.map(_.where(cond.focal35)),

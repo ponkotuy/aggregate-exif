@@ -1,8 +1,8 @@
 package models
 
+import com.github.nscala_time.time.Imports._
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
-import com.github.nscala_time.time.Imports._
 
 case class Session(
     id: Long,
@@ -18,6 +18,8 @@ case class Session(
 }
 
 object Session extends SkinnyCRUDMapperWithId[Long, Session] {
+  import Aliases.s
+
   override def idToRawValue(id: Long): Any = id
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
@@ -26,7 +28,7 @@ object Session extends SkinnyCRUDMapperWithId[Long, Session] {
   override def extract(rs: WrappedResultSet, n: ResultName[Session]): Session = autoConstruct(rs, n)
 
   def findByToken(token: String)(implicit db: DBSession): Option[Session] =
-    findBy(sqls.eq(defaultAlias.token, token))
+    findBy(sqls.eq(s.token, token).and.gt(s.expire, DateTime.now))
 
   def create(se: Session)(implicit db: DBSession): Long =
     createWithAttributes(params(se): _*)

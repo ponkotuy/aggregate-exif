@@ -1,7 +1,7 @@
 
 name := "AggregateEXIFLibrary"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time" % "2.16.0",
