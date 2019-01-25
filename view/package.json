@@ -18,11 +18,11 @@
   "homepage": "https://github.com/ponkotuy/FactorioRecipe#readme",
   "devDependencies": {
     "bootstrap-material-design": "^0.5.10",
-    "coffee-script": "^1.12.6",
-    "gulp": "^3.9.1",
-    "gulp-coffee": "^2.3.4",
-    "gulp-plumber": "^1.1.0",
-    "gulp-pug": "^3.3.0"
+    "coffeescript": "^2.3.2",
+    "gulp": "^4.0.0",
+    "gulp-coffee": "^3.0.3",
+    "gulp-plumber": "^1.2.1",
+    "gulp-pug": "^4.0.1"
   },
   "dependencies": {}
 }

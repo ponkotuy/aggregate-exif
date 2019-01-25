@@ -25,11 +25,11 @@ gulp.task 'copyjs', ->
     .pipe plumber()
     .pipe gulp.dest('./output/lib/')
 
-gulp.task 'compile', ['pug', 'coffee', 'copy', 'copyjs']
+gulp.task 'compile', gulp.series(gulp.parallel('pug', 'coffee', 'copy', 'copyjs'))
 
-gulp.task 'watch', ['compile'], ->
-  gulp.watch('./src/pug/**/*.pug', ['pug'])
-  gulp.watch('./src/coffee/**/*.coffee', ['coffee'])
-  gulp.watch('./src/js/**/*.js', ['copyjs'])
+gulp.task 'watch', gulp.series 'compile', ->
+  gulp.watch('./src/pug/**/*.pug', gulp.task 'pug')
+  gulp.watch('./src/coffee/**/*.coffee', gulp.task 'coffee')
+  gulp.watch('./src/js/**/*.js', gulp.task 'copyjs')
 
-gulp.task 'default', ['watch']
+gulp.task 'default', gulp.series('watch')

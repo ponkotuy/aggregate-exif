@@ -11,7 +11,6 @@ html(lang=ja)
         h1 CameraNamazu
         p 写真のEXIF情報を集計・公開
         a.btn.btn-primary(href='/auth/account.html') アカウント作成
-        a.btn.btn-primary(href='/uploader.zip') Uploader
         a.btn.btn-primary(href='https://gitter.im/ponkotuy/aggregate-exif') 開発室(Gitter)
       .row
         .col-sm-3
@@ -32,11 +31,4 @@ html(lang=ja)
             li グラフを公開する場合は右上のメニューから公開する
 
           h3 アップロード方法
-          h4 Uploadタブから
-          p jpeg形式のファイルをUploadできます(複数可)
-          h4 専用Uploaderから
-          p
-            a(href='/uploader.zip') Uploader
-            | をダウンロードして解凍し、以下のようにコマンドを実行します
-          code $ bin/aggregateexifclient &lt;dir|file&gt;
-          p 初回起動時はユーザ設定がされてないのでエラーになります。なので、$HOME/.namazu/application.confに設定を追記します
+          p Uploadタブからjpeg形式のファイルをUploadできます(複数可)
