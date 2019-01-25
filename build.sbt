@@ -7,10 +7,6 @@ lazy val library = project in file("library")
 lazy val root = (project in file("."))
     .enablePlugins(PlayScala)
     .dependsOn(library)
-lazy val client = (project in file("client"))
-    .enablePlugins(JavaAppPackaging)
-    .dependsOn(library)
-    .settings(version := "0.1")
 
 resolvers += "Bintary JCenter" at "http://jcenter.bintray.com"
 
