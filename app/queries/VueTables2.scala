@@ -37,8 +37,8 @@ object ImageTable extends VueTablesParser {
 
   override def column(str: String): Option[SQLSyntax] = str match {
     case "name" => Some(i.fileName)
-    case "shootingTime" => Some(i.dateTime)
-    case "uploadingTime" => Some(i.createdAt)
+    case "dateTime" => Some(i.dateTime)
+    case "createdAt" => Some(i.createdAt)
     case _ => None
   }
 

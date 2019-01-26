@@ -1,5 +1,5 @@
 $(document).ready ->
-  Vue.use(VueTables.ServerTable)
+  Vue.use(VueTables.ServerTable, theme = 'bootstrap3')
   document.getElementById('uploadTab').className = 'active'
   mustSession()
   results = renderResults()
@@ -45,5 +45,11 @@ renderImages = ->
   new Vue
     el: '#images'
     data:
-      columns: ['name', 'shootingTime', 'uploadingTime']
-      options: {orderBy: {ascending: false, column: 'shootingTime'}, perPage: 100}
+      columns: ['fileName', 'dateTime', 'createdAt']
+      options:
+        orderBy: {ascending: false, column: 'dateTime'}
+        perPage: 100
+        headings:
+          fileName: 'Name'
+          dateTime: 'ShootingTime'
+          createdAt: 'UploadingTime'

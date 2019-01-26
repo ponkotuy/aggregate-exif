@@ -38,13 +38,17 @@ class ImageController @Inject()(_ec: ExecutionContext, json4s: Json4s) extends I
   def list() = StackAction(NormalUser) { req =>
     import models.Aliases.i
     val vueTables = ImageTable.fromReq(req.req)
-    println(vueTables)
     val where = sqls.toAndConditionOpt(
       Some(sqls.eq(i.userId, req.user.id)),
       vueTables.query.map { q => sqls.like(i.fileName, s"%${q}%") }
     ).getOrElse(sqls"true")
     val count = Image.countBy(where)
-    val data = Image.findAllByWithLimitOffset(where, limit = vueTables.limit, offset = vueTables.limit * vueTables.page)
+    val data = Image.findAllByWithLimitOffset(
+      where,
+      limit = vueTables.limit,
+      offset = vueTables.limit * vueTables.page,
+      orderings = vueTables.orderBy :: Nil
+    )
     Ok(Extraction.decompose(VueTables2Response(data, count)))
   }
 
