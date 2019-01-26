@@ -14,11 +14,11 @@ import models.{ExifSerializer, Image}
 import org.json4s.ext.JodaTimeSerializers
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.Logger
-import play.api.libs.Files
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.MultipartFormData.FilePart
-import play.api.mvc.{InjectedController, MultipartFormData, Result}
+import play.api.mvc.{InjectedController, Result}
 import queries._
+import responses.VueTables2Response
 import scalikejdbc._
 
 import scala.collection.JavaConverters._
@@ -35,19 +35,17 @@ class ImageController @Inject()(_ec: ExecutionContext, json4s: Json4s) extends I
   val extractor = new Extractor
 
   val ParPage = 100
-  def list(page: Int) = StackAction(NormalUser) { req =>
+  def list() = StackAction(NormalUser) { req =>
     import models.Aliases.i
-    if(page < 0) BadRequest("Page is negative")
-    else {
-      val images = if(page < 10)
-        Image.findAllByWithLimitOffset(
-          sqls.eq(i.userId, req.user.id),
-          limit = ParPage,
-          offset = page * ParPage,
-          orderings = i.id.desc :: Nil)(req.db)
-      else Nil
-      Ok(Extraction.decompose(images))
-    }
+    val vueTables = ImageTable.fromReq(req.req)
+    println(vueTables)
+    val where = sqls.toAndConditionOpt(
+      Some(sqls.eq(i.userId, req.user.id)),
+      vueTables.query.map { q => sqls.like(i.fileName, s"%${q}%") }
+    ).getOrElse(sqls"true")
+    val count = Image.countBy(where)
+    val data = Image.findAllByWithLimitOffset(where, limit = vueTables.limit, offset = vueTables.limit * vueTables.page)
+    Ok(Extraction.decompose(VueTables2Response(data, count)))
   }
 
   def count() = StackAction(NormalUser) { req =>

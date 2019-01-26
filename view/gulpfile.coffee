@@ -19,6 +19,9 @@ gulp.task 'copy', ->
   gulp.src './node_modules/bootstrap-material-design/dist/**'
     .pipe plumber()
     .pipe gulp.dest('./output/lib/bootstrap-material-design/')
+  gulp.src './node_modules/vue-tables-2/dist/*.min.js'
+    .pipe plumber()
+    .pipe gulp.dest('./output/lib/vue-tables-2/')
 
 gulp.task 'copyjs', ->
   gulp.src './lib/js/**/*.js'

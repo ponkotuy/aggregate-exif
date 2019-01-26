@@ -32,5 +32,6 @@ javaOptions in Universal ++= Seq(
 )
 
 // Docker
+dockerBaseImage := "openjdk:11-slim"
 dockerRepository := Some("ponkotuy")
 dockerUpdateLatest := true

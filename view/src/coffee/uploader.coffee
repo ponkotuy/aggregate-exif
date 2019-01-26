@@ -1,4 +1,5 @@
 $(document).ready ->
+  Vue.use(VueTables.ServerTable)
   document.getElementById('uploadTab').className = 'active'
   mustSession()
   results = renderResults()
@@ -9,9 +10,10 @@ $(document).ready ->
         send(form).then (res) ->
           res.text().then (text) ->
             results.push {success: res.ok, text: text, name: file_.name}
-  fetch('/api/images/count', {credentials: 'include'})
-    .then (res) -> res.json()
-    .then (json) -> renderImages(json)
+  renderImages()
+#  fetch('/api/images/count', {credentials: 'include'})
+#    .then (res) -> res.json()
+#    .then (json) -> renderImages(json)
 
 imageMinimize = (file, f) ->
   reader = new FileReader()
@@ -39,33 +41,9 @@ renderResults = ->
       push: (r) ->
         @results.push(r)
 
-renderImages = (pageCount) ->
+renderImages = ->
   new Vue
     el: '#images'
     data:
-      page: 0
-      images: []
-      pageCount: Math.min(pageCount.page, 10)
-      allChecked: false
-      checked: []
-    methods:
-      getImages: (page) ->
-        fetch("/api/images?page=#{page}", {credentials: 'include'})
-          .then (res) -> res.json()
-          .then (json) =>
-            @images = json
-      nextPage: (page) ->
-        @page = Math.max(0, Math.min(@pageCount - 1, page))
-        @getImages(@page)
-      deletes: ->
-        json = JSON.stringify(@checked)
-        fetch('/api/images', {body: json, method: 'DELETE', headers: {'Content-Type': 'application/json'}, credentials: 'include'})
-          .then -> location.reload(false)
-    mounted: ->
-      @getImages(0)
-    watch:
-      'allChecked': (v) ->
-        if v
-          @checked = @images.map (img) -> img.id
-        else
-          @checked = []
+      columns: ['name', 'shootingTime', 'uploadingTime']
+      options: {orderBy: {ascending: false, column: 'shootingTime'}, perPage: 100}
