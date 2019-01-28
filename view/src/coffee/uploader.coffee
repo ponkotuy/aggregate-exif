@@ -44,17 +44,28 @@ renderImages = ->
     data:
       columns: ['checkbox', 'fileName', 'dateTime', 'createdAt']
       checkedRows: []
+      allChecked: false
       options:
         sortable: ['fileName', 'dateTime', 'createdAt']
         orderBy: {ascending: false, column: 'dateTime'}
         perPage: 100
         headings:
-          checkbox: createCheckbox
+          checkbox: (h) -> createCheckbox(h, @)
           fileName: 'Name'
           dateTime: 'ShootingTime'
           createdAt: 'UploadingTime'
+    methods:
+      deleteImages: ->
+        json = JSON.stringify(@checkedRows.map (x) -> x.id)
+        fetch('/api/images', {body: json, method: 'DELETE', headers: {'Content-Type': 'application/json'}, credentials: 'include'})
+          .then -> location.reload(false)
 
-createCheckbox = (h) ->
+createCheckbox = (h, self) ->
   h 'input',
     attrs:
       type: 'checkbox'
+    on:
+      click: ->
+        self.allChecked = !self.allChecked
+        $('.image-checkbox').click()
+    ref: 'selectAllCheckbox'

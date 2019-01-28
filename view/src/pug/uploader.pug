@@ -26,5 +26,6 @@ html(lang=ja)
           span {{result.name}}: {{result.text}}
       h3 Uploaded images
       #images
-        v-server-table.table.table-striped(url='/api/images', :columns='columns', :options='options')
-          input(type='checkbox', slot='checkbox', slot-scope='props', v-model='checkedRows', :value='props.row', :checked='props.row.checkbox')
+        v-server-table.table.table-striped(url='/api/images', :columns='columns', :options='options', ref='table')
+          input.image-checkbox(type='checkbox', slot='checkbox', slot-scope='props', v-model='checkedRows', :value='props.row', :checked='props.row.checkbox')
+          button.btn.btn-danger(type='button', slot='afterTable' @click='deleteImages') Delete
