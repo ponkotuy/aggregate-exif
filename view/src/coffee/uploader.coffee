@@ -11,9 +11,6 @@ $(document).ready ->
           res.text().then (text) ->
             results.push {success: res.ok, text: text, name: file_.name}
   renderImages()
-#  fetch('/api/images/count', {credentials: 'include'})
-#    .then (res) -> res.json()
-#    .then (json) -> renderImages(json)
 
 imageMinimize = (file, f) ->
   reader = new FileReader()
@@ -45,11 +42,19 @@ renderImages = ->
   new Vue
     el: '#images'
     data:
-      columns: ['fileName', 'dateTime', 'createdAt']
+      columns: ['checkbox', 'fileName', 'dateTime', 'createdAt']
+      checkedRows: []
       options:
+        sortable: ['fileName', 'dateTime', 'createdAt']
         orderBy: {ascending: false, column: 'dateTime'}
         perPage: 100
         headings:
+          checkbox: createCheckbox
           fileName: 'Name'
           dateTime: 'ShootingTime'
           createdAt: 'UploadingTime'
+
+createCheckbox = (h) ->
+  h 'input',
+    attrs:
+      type: 'checkbox'

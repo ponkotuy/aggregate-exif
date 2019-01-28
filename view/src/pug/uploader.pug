@@ -27,3 +27,4 @@ html(lang=ja)
       h3 Uploaded images
       #images
         v-server-table.table.table-striped(url='/api/images', :columns='columns', :options='options')
+          input(type='checkbox', slot='checkbox', slot-scope='props', v-model='checkedRows', :value='props.row', :checked='props.row.checkbox')
