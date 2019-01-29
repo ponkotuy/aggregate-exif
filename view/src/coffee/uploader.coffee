@@ -37,20 +37,23 @@ renderResults = ->
     methods:
       push: (r) ->
         @results.push(r)
-
+COLUMNS = ['checkbox', 'fileName', 'cond.fNumber', 'cond.focal', 'cond.iso', 'dateTime', 'createdAt']
 renderImages = ->
   new Vue
     el: '#images'
     data:
-      columns: ['checkbox', 'fileName', 'dateTime', 'createdAt']
+      columns: COLUMNS
       checkedRows: []
       allChecked: false
       options:
-        sortable: ['fileName', 'dateTime', 'createdAt']
+        sortable: COLUMNS
         orderBy: {ascending: false, column: 'dateTime'}
         perPage: 100
         headings:
           checkbox: (h) -> createCheckbox(h, @)
+          'cond.fNumber': 'F'
+          'cond.focal': 'Focal'
+          'cond.iso': 'ISO'
           fileName: 'Name'
           dateTime: 'ShootingTime'
           createdAt: 'UploadingTime'
