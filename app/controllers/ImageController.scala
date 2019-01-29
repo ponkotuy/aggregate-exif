@@ -37,7 +37,6 @@ class ImageController @Inject()(_ec: ExecutionContext, json4s: Json4s) extends I
   val ParPage = 100
   def list() = StackAction(NormalUser) { req =>
     val vueTables = ImageTable.fromReq(req.req)
-    println(vueTables)
     val where = vueTables.where
     val count = Image.countBy(where)
     val data = Image.findAllByWithLimitOffset(
