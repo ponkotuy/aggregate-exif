@@ -36,12 +36,9 @@ class ImageController @Inject()(_ec: ExecutionContext, json4s: Json4s) extends I
 
   val ParPage = 100
   def list() = StackAction(NormalUser) { req =>
-    import models.Aliases.i
     val vueTables = ImageTable.fromReq(req.req)
-    val where = sqls.toAndConditionOpt(
-      Some(sqls.eq(i.userId, req.user.id)),
-      vueTables.query.map { q => sqls.like(i.fileName, s"%${q}%") }
-    ).getOrElse(sqls"true")
+    println(vueTables)
+    val where = vueTables.where
     val count = Image.countBy(where)
     val data = Image.findAllByWithLimitOffset(
       where,

@@ -46,7 +46,9 @@ renderImages = ->
       checkedRows: []
       allChecked: false
       options:
-        sortable: COLUMNS
+        filterByColumn: true
+        sortable: COLUMNS.slice(1, -1)
+        filterable: COLUMNS.slice(1, -1)
         orderBy: {ascending: false, column: 'dateTime'}
         perPage: 100
         headings:
