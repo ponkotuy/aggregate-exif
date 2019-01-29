@@ -2,7 +2,6 @@ package com.ponkotuy.queries
 
 import com.github.nscala_time.time.Imports._
 import org.joda.time.format.DateTimeFormatter
-import com.ponkotuy.utils.EitherUtil.eitherToRightProjection
 
 case class Exif(
     fileName: String,

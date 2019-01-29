@@ -3,10 +3,8 @@ scalaVersion := "2.12.8"
 
 name := "AggregateEXIF"
 
-lazy val library = project in file("library")
 lazy val root = (project in file("."))
     .enablePlugins(PlayScala)
-    .dependsOn(library)
 
 resolvers += "Bintary JCenter" at "http://jcenter.bintray.com"
 
@@ -24,7 +22,8 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-core" % "1.2.3",
   "ch.qos.logback" % "logback-classic" % "1.1.7" % "runtime",
   "org.slf4j" % "slf4j-api" % "1.7.21",
-  "com.amazonaws" % "aws-java-sdk" % "1.11.158"
+  "com.amazonaws" % "aws-java-sdk" % "1.11.158",
+  "com.drewnoakes" % "metadata-extractor" % "2.11.0"
 )
 
 javaOptions in Universal ++= Seq(
