@@ -23,7 +23,8 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.7" % "runtime",
   "org.slf4j" % "slf4j-api" % "1.7.21",
   "com.amazonaws" % "aws-java-sdk" % "1.11.158",
-  "com.drewnoakes" % "metadata-extractor" % "2.11.0"
+  "com.drewnoakes" % "metadata-extractor" % "2.11.0",
+  "io.sentry" % "sentry-logback" % "1.7.16"
 )
 
 javaOptions in Universal ++= Seq(
@@ -34,3 +35,7 @@ javaOptions in Universal ++= Seq(
 dockerBaseImage := "openjdk:11-slim"
 dockerRepository := Some("ponkotuy")
 dockerUpdateLatest := true
+
+// Speedup build
+sources in (Compile, doc) := Seq.empty
+publishArtifact in (Compile, packageDoc) := false

@@ -5,6 +5,8 @@
 # An example controller showing a sample home page
 GET / controllers.Assets.at(path="/public", file = "index.html")
 
+GET /health controllers.HealthController.health()
+
 POST /api/session controllers.SessionController.login()
 DELETE /api/session controllers.SessionController.logout()
 
