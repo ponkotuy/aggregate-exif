@@ -5,7 +5,7 @@ import play.api.mvc.InjectedController
 
 @Singleton
 class HealthController @Inject()() extends InjectedController {
-  def health() = Action {
+  def error() = Action {
     println(1 / 0)
     Ok
   }
