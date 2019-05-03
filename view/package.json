@@ -18,7 +18,7 @@
   "homepage": "https://github.com/ponkotuy/FactorioRecipe#readme",
   "devDependencies": {
     "bootstrap-material-design": "^0.5.10",
-    "bootstrap": "^3.4.0",
+    "bootstrap": "^3.4.1",
     "vue-tables-2": "^1.4.70",
     "coffeescript": "^2.3.2",
     "gulp": "^4.0.0",
