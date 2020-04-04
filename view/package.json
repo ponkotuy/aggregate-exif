@@ -17,14 +17,14 @@
   },
   "homepage": "https://github.com/ponkotuy/FactorioRecipe#readme",
   "devDependencies": {
-    "bootstrap-material-design": "^0.5.10",
     "bootstrap": "^3.4.1",
-    "vue-tables-2": "^1.4.70",
-    "coffeescript": "^2.3.2",
-    "gulp": "^4.0.0",
+    "bootstrap-material-design": "^0.5.10",
+    "coffeescript": "^2.5.1",
+    "gulp": "^4.0.2",
     "gulp-coffee": "^3.0.3",
     "gulp-plumber": "^1.2.1",
-    "gulp-pug": "^4.0.1"
+    "gulp-pug": "^4.0.1",
+    "vue-tables-2": "^1.6.25"
   },
   "dependencies": {}
 }
